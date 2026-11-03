@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust Travel - 客製團旅</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coral: {
+                            50: '#F7ECEB',
+                            100: '#E8CECD',
+                            300: '#E2A99B',
+                            600: '#B55353',
+                            700: '#9A4141',
+                        },
+                        teal: {
+                            50: '#F3F7F8',
+                            100: '#D8E4E7',
+                            200: '#C2DCDE',
+                            600: '#588B97',
+                            700: '#436B75',
+                        },
+                        dark: '#2C3E50',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-[#FAF8F5] text-dark flex flex-col min-h-screen">
+
+    <!-- HEADER (透過 auth.js 渲染固定 Header) -->
+    <div id="header-container"></div>
+
+    <!-- 跑馬燈通知 -->
+    <div class="bg-coral-50/80 border-b border-coral-100 py-2 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 flex items-center">
+            <span class="bg-coral-600 text-white text-xs px-2.5 py-0.5 rounded-full font-bold mr-3 flex-shrink-0 z-10 shadow-sm">公告</span>
+            <div class="flex-1 overflow-hidden">
+                <div class="animate-marquee-seamless">
+                    <div class="marquee-item space-x-2 pr-12"><span class="text-coral-800 text-xs font-semibold">可依照需求客製化行程內容，歡迎預約洽詢 🚀</span></div>
+                    <div class="marquee-item space-x-2 pr-12"><span class="text-coral-800 text-xs font-semibold">可依照需求客製化行程內容，歡迎預約洽詢 🚀</span></div>
+                    <div class="marquee-item space-x-2 pr-12"><span class="text-coral-800 text-xs font-semibold">可依照需求客製化行程內容，歡迎預約洽詢 🚀</span></div>
+                    <div class="marquee-item space-x-2 pr-12"><span class="text-coral-800 text-xs font-semibold">可依照需求客製化行程內容，歡迎預約洽詢 🚀</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-12 flex-grow">
+
+        <!-- 1. 主題展示區 -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-stretch">
+            <div class="md:col-span-1 flex flex-col justify-between space-y-3 h-full">
+                <button onclick="switchTopic(0)" id="btn-topic-0"
+                    class="topic-btn w-full flex-1 py-4 px-4 bg-coral-600 text-white font-bold rounded-xl shadow transition text-center flex items-center justify-center cursor-pointer text-sm">
+                    企業員工旅遊
+                </button>
+                <button onclick="switchTopic(1)" id="btn-topic-1"
+                    class="topic-btn w-full flex-1 py-4 px-4 bg-white/90 text-stone-700 font-bold rounded-xl border border-stone-200 hover:bg-coral-50 hover:text-coral-600 transition text-center flex items-center justify-center cursor-pointer text-sm">
+                    家族包團聚會
+                </button>
+                <button onclick="switchTopic(2)" id="btn-topic-2"
+                    class="topic-btn w-full flex-1 py-4 px-4 bg-white/90 text-stone-700 font-bold rounded-xl border border-stone-200 hover:bg-coral-50 hover:text-coral-600 transition text-center flex items-center justify-center cursor-pointer text-sm">
+                    畢業主題旅行
+                </button>
+            </div>
+
+            <div class="md:col-span-3 bg-white/90 backdrop-blur-md p-3 rounded-2xl border border-stone-200/70 soft-shadow flex flex-col h-full min-h-[280px]">
+                <div class="relative w-full h-full rounded-xl overflow-hidden flex-grow">
+                    <img id="topic-img"
+                        src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1000&q=80"
+                        class="w-full h-full object-cover transition-all duration-500 absolute inset-0"
+                        alt="Custom Tour Preview">
+                    <div class="absolute inset-0 bg-dark/40 flex items-center justify-center p-6">
+                        <div class="text-center text-white space-y-2">
+                            <span id="topic-badge" class="bg-coral-600 text-xs px-3 py-1 rounded-full uppercase font-medium shadow-sm">100% 專屬訂製</span>
+                            <h3 id="topic-title" class="text-xl sm:text-2xl font-bold">打造屬於您的獨一無二專屬行程</h3>
+                            <p id="topic-desc" class="text-xs sm:text-sm text-stone-200 max-w-lg mx-auto">專業旅遊規劃師全天候一對一服務，量身定制最佳體驗。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 快速客製需求單區塊 -->
+        <div class="bg-white/90 backdrop-blur-md p-6 rounded-2xl border border-stone-200/70 soft-shadow">
+            <div class="text-xs font-semibold text-teal-600 mb-2">快速客製需求單</div>
+            <form id="quick-request-form" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end" onsubmit="event.preventDefault(); submitQuickRequest();">
+                <div>
+                    <label class="block text-xs font-semibold text-stone-500 mb-1">From (出發地點)</label>
+                    <input type="text" id="quick-from" required placeholder="例如：台北 / 台南"
+                        class="w-full p-2.5 bg-stone-50 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-stone-500 mb-1">To (預計目的地)</label>
+                    <input type="text" id="quick-to" required placeholder="例如：日本東京 / 泰國曼谷"
+                        class="w-full p-2.5 bg-stone-50 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-stone-500 mb-1">Time (預計出發月份或日期)</label>
+                    <input type="date" id="quick-date" required
+                        class="w-full p-2.5 bg-stone-50 rounded-lg border border-stone-200 text-sm text-stone-700 focus:outline-none focus:ring-2 focus:ring-teal-600">
+                </div>
+                <div>
+                    <button type="submit" class="w-full py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-lg transition shadow text-sm cursor-pointer">
+                        提交客製需求
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 3. 客製化 4 步服務流程 -->
+        <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-stone-200 pb-3">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-coral-600 text-xl"></i>
+                    <h2 class="text-xl font-bold text-dark">客製包團 4 步服務流程</h2>
+                </div>
+                <span class="text-xs text-gray-400 font-medium">透明高效率服務流程</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <!-- Step 1 -->
+                <div class="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-stone-200/70 soft-shadow space-y-3 relative group">
+                    <div class="flex items-center justify-between">
+                        <div class="w-10 h-10 rounded-xl bg-coral-50 text-coral-600 font-bold flex items-center justify-center text-lg">01</div>
+                        <i class="fa-solid fa-pen-to-square text-stone-300 group-hover:text-coral-600 transition text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-dark text-sm">1. 送出線上需求</h4>
+                        <p class="text-xs text-gray-400 leading-relaxed mt-1">填寫出發地點、預計人數、偏好目的地與大致預算。</p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-stone-200/70 soft-shadow space-y-3 relative group">
+                    <div class="flex items-center justify-between">
+                        <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 font-bold flex items-center justify-center text-lg">02</div>
+                        <i class="fa-solid fa-comments text-stone-300 group-hover:text-teal-600 transition text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-dark text-sm">2. 專屬顧問溝通</h4>
+                        <p class="text-xs text-gray-400 leading-relaxed mt-1">24h 內由專業旅遊顧問主動聯繫，精確對接您的客製需求。</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-stone-200/70 soft-shadow space-y-3 relative group">
+                    <div class="flex items-center justify-between">
+                        <div class="w-10 h-10 rounded-xl bg-coral-50 text-coral-600 font-bold flex items-center justify-center text-lg">03</div>
+                        <i class="fa-solid fa-file-invoice-dollar text-stone-300 group-hover:text-coral-600 transition text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-dark text-sm">3. 試算提案與報價</h4>
+                        <p class="text-xs text-gray-400 leading-relaxed mt-1">1-2 工作天內提供專屬行程企劃書、飯店選單與透明費用試算。</p>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-stone-200/70 soft-shadow space-y-3 relative group">
+                    <div class="flex items-center justify-between">
+                        <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 font-bold flex items-center justify-center text-lg">04</div>
+                        <i class="fa-solid fa-plane-departure text-stone-300 group-hover:text-teal-600 transition text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-dark text-sm">4. 簽約與安心出發</h4>
+                        <p class="text-xs text-gray-400 leading-relaxed mt-1">確認細節簽約履約保障，提供專屬領隊導遊與全天候海外支援。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. 精選客製案例區域 -->
+        <div>
+            <h3 class="text-xl font-bold text-dark mb-4">精選客製案例</h3>
+
+            <!-- 查無搜尋結果提示 -->
+            <div id="no-results-msg" class="hidden bg-white p-8 rounded-xl text-center text-gray-500 shadow-sm border border-stone-200 mb-6 space-y-2">
+                <i class="fa-solid fa-magnifying-glass text-3xl text-stone-300 mb-1"></i>
+                <h4 class="font-bold text-gray-700">找不到符合條件的客製案例</h4>
+                <p class="text-xs text-gray-400">請嘗試更換其他關鍵字（例如：夏威夷、日本、韓國、泰國、瑞士、建築、溫泉等）</p>
+            </div>
+
+            <!-- 卡片容器 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- 案例 1: 夏威夷 -->
+                <div class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 cursor-pointer flex flex-col justify-between"
+                    data-keywords="夏威夷 美國 科技公司 獎勵旅遊 海島 渡假 包機 晚宴 陽光 企業旅遊 北美">
+                    <div>
+                        <div class="h-48 bg-stone-200 overflow-hidden"><img
+                                src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=500&q=80"
+                                class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" alt="夏威夷">
+                        </div>
+                        <div class="p-4 space-y-2">
+                            <div class="text-xs font-semibold text-coral-600">topic: 科技公司獎勵旅遊</div>
+                            <h4 class="font-bold text-gray-800 text-sm">夏威夷海島奢華渡假 7 日</h4>
+                            <div class="flex gap-2"><span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#晚宴安排</span><span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#專屬包機</span></div>
+                            <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100">
+                                <span><i class="fa-regular fa-user mr-1"></i> 人數: 50人起</span><span><i class="fa-solid fa-location-dot mr-1"></i> 夏威夷 (美國)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0 flex items-center justify-between">
+                        <span class="text-coral-600 font-bold text-xl">NT$ 85,000起</span>
+                        <button onclick="openBookingModal('夏威夷海島奢華渡假 7 日', 'NT$ 85,000')"
+                            class="px-4 py-2 bg-coral-600 hover:bg-coral-700 text-white font-medium text-xs rounded-lg transition shadow cursor-pointer">
+                            立即預約
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 案例 2: 日本東北 -->
+                <div class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 cursor-pointer flex flex-col justify-between"
+                    data-keywords="日本 東北 櫻花 銀山溫泉 溫泉 三代同堂 家庭 聚會 家族包團 專屬導遊 亞洲">
+                    <div>
+                        <div class="h-48 bg-stone-200 overflow-hidden"><img
+                                src="https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=500&q=80"
+                                class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" alt="日本東北">
+                        </div>
+                        <div class="p-4 space-y-2">
+                            <div class="text-xs font-semibold text-coral-600">topic: 三代同堂家庭聚會</div>
+                            <h4 class="font-bold text-gray-800 text-sm">日本東北秘境櫻花與銀山溫泉浪漫行</h4>
+                            <div class="flex gap-2"><span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#專屬導遊</span><span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#無障礙行程</span></div>
+                            <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100">
+                                <span><i class="fa-regular fa-user mr-1"></i> 人數: 8-12人</span><span><i class="fa-solid fa-location-dot mr-1"></i> 東北 (日本)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0 flex items-center justify-between">
+                        <span class="text-coral-600 font-bold text-xl">NT$ 78,800起</span>
+                        <button onclick="openBookingModal('日本東北秘境櫻花與銀山溫泉浪漫行', 'NT$ 78,800')"
+                            class="px-4 py-2 bg-coral-600 hover:bg-coral-700 text-white font-medium text-xs rounded-lg transition shadow cursor-pointer">
+                            立即預約
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 案例 3: 北歐 -->
+                <div class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 cursor-pointer flex flex-col justify-between"
+                    data-keywords="北歐 丹麥 瑞典 建築 考察團 大師作品 學術交流 歐洲 設計 現代建築">
+                    <div>
+                        <div class="h-48 bg-stone-200 overflow-hidden"><img
+                                src="https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?auto=format&fit=crop&w=500&q=80"
+                                class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" alt="北歐">
+                        </div>
+                        <div class="p-4 space-y-2">
+                            <div class="text-xs font-semibold text-coral-600">topic: 建築學會考察團</div>
+                            <h4 class="font-bold text-gray-800 text-sm">北歐現代建築與設計經典 9 日</h4>
+                            <div class="flex gap-2"><span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#大師作品</span><span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#學術交流</span></div>
+                            <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100">
+                                <span><i class="fa-regular fa-user mr-1"></i> 人數: 20人</span><span><i class="fa-solid fa-location-dot mr-1"></i> 丹麥/瑞典 (歐洲)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0 flex items-center justify-between">
+                        <span class="text-coral-600 font-bold text-xl">NT$ 112,000起</span>
+                        <button onclick="openBookingModal('北歐現代建築與設計經典 9 日', 'NT$ 112,000')"
+                            class="px-4 py-2 bg-coral-600 hover:bg-coral-700 text-white font-medium text-xs rounded-lg transition shadow cursor-pointer">
+                            立即預約
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 案例 4: 泰國曼谷 -->
+                <div class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 cursor-pointer flex flex-col justify-between"
+                    data-keywords="泰國 曼谷 奢華 Villa 員旅 企業旅遊 泰式 SPA 晚宴 東南亞 亞洲">
+                    <div>
+                        <div class="h-48 bg-stone-200 overflow-hidden"><img
+                                src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=500&q=80"
+                                class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" alt="泰國曼谷">
+                        </div>
+                        <div class="p-4 space-y-2">
+                            <div class="text-xs font-semibold text-coral-600">topic: 企業高層獎勵員旅</div>
+                            <h4 class="font-bold text-gray-800 text-sm">泰國曼谷奢華 Villa 與高空晚宴 5 日</h4>
+                            <div class="flex gap-2"><span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#泰式SPA</span><span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#高空酒吧包場</span></div>
+                            <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100">
+                                <span><i class="fa-regular fa-user mr-1"></i> 人數: 30人起</span><span><i class="fa-solid fa-location-dot mr-1"></i> 曼谷 (泰國)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0 flex items-center justify-between">
+                        <span class="text-coral-600 font-bold text-xl">NT$ 42,000起</span>
+                        <button onclick="openBookingModal('泰國曼谷奢華 Villa 與高空晚宴 5 日', 'NT$ 42,000')"
+                            class="px-4 py-2 bg-coral-600 hover:bg-coral-700 text-white font-medium text-xs rounded-lg transition shadow cursor-pointer">
+                            立即預約
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 案例 5: 瑞士 -->
+                <div class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 cursor-pointer flex flex-col justify-between"
+                    data-keywords="瑞士 歐洲 冰河列車 阿爾卑斯山 少女峰 景觀列車 家族包團 鐵道漫遊 奢華">
+                    <div>
+                        <div class="h-48 bg-stone-200 overflow-hidden"><img
+                                src="https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=500&q=80"
+                                class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" alt="瑞士">
+                        </div>
+                        <div class="p-4 space-y-2">
+                            <div class="text-xs font-semibold text-coral-600">topic: 尊榮家族深度漫遊</div>
+                            <h4 class="font-bold text-gray-800 text-sm">瑞士冰河列車與阿爾卑斯名峰 10 日</h4>
+                            <div class="flex gap-2"><span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#全包式頭等艙</span><span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#山景景觀飯店</span></div>
+                            <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100">
+                                <span><i class="fa-regular fa-user mr-1"></i> 人數: 6-10人</span><span><i class="fa-solid fa-location-dot mr-1"></i> 瑞士 (歐洲)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0 flex items-center justify-between">
+                        <span class="text-coral-600 font-bold text-xl">NT$ 138,000起</span>
+                        <button onclick="openBookingModal('瑞士冰河列車與阿爾卑斯名峰 10 日', 'NT$ 138,000')"
+                            class="px-4 py-2 bg-coral-600 hover:bg-coral-700 text-white font-medium text-xs rounded-lg transition shadow cursor-pointer">
+                            立即預約
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 案例 6: 沖繩 -->
+                <div class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 cursor-pointer flex flex-col justify-between"
+                    data-keywords="日本 沖繩 家族包團 海景渡假村 水族館 親子旅遊 亞洲 自駕 保姆車">
+                    <div>
+                        <div class="h-48 bg-stone-200 overflow-hidden"><img
+                                src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=500&q=80"
+                                class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" alt="沖繩">
+                        </div>
+                        <div class="p-4 space-y-2">
+                            <div class="text-xs font-semibold text-coral-600">topic: 親子多代同樂包團</div>
+                            <h4 class="font-bold text-gray-800 text-sm">沖繩海景渡假村與水族館親自然 4 日</h4>
+                            <div class="flex gap-2"><span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#保姆車全接送</span><span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#水族館VIP導覽</span></div>
+                            <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100">
+                                <span><i class="fa-regular fa-user mr-1"></i> 人數: 6-12人</span><span><i class="fa-solid fa-location-dot mr-1"></i> 沖繩 (日本)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0 flex items-center justify-between">
+                        <span class="text-coral-600 font-bold text-xl">NT$ 28,500起</span>
+                        <button onclick="openBookingModal('沖繩海景渡假村與水族館親自然 4 日', 'NT$ 28,500')"
+                            class="px-4 py-2 bg-coral-600 hover:bg-coral-700 text-white font-medium text-xs rounded-lg transition shadow cursor-pointer">
+                            立即預約
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 5. 常見問題 FAQ 區塊 -->
+        <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-stone-200 pb-3">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-circle-question text-teal-600 text-xl"></i>
+                    <h2 class="text-xl font-bold text-dark">常見問題 FAQ</h2>
+                </div>
+                <span class="text-xs text-gray-400 font-medium">客製訂製常見疑慮解答</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-stone-200/70 soft-shadow space-y-2">
+                    <h4 class="font-bold text-dark text-sm flex items-center gap-2">
+                        <span class="text-coral-600 font-bold">Q.</span> 最少幾個人可以申請客製小團？
+                    </h4>
+                    <p class="text-xs text-gray-500 leading-relaxed pl-5">
+                        家族親友小團只要 4~6 人即可獨立成團並安排專車導遊接送；企業員工旅遊或大型參訪團則無人數上限。
+                    </p>
+                </div>
+
+                <div class="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-stone-200/70 soft-shadow space-y-2">
+                    <h4 class="font-bold text-dark text-sm flex items-center gap-2">
+                        <span class="text-coral-600 font-bold">Q.</span> 提出的需求單多久會收到回覆？
+                    </h4>
+                    <p class="text-xs text-gray-500 leading-relaxed pl-5">
+                        線上需求單送出後，旅遊顧問將於 24 小時內與您聯繫；完整行程企劃書與初步預算試算將於 1~2 個工作天內提供。
+                    </p>
+                </div>
+
+                <div class="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-stone-200/70 soft-shadow space-y-2">
+                    <h4 class="font-bold text-dark text-sm flex items-center gap-2">
+                        <span class="text-coral-600 font-bold">Q.</span> 可以指定特定的飯店或自訂行程嗎？
+                    </h4>
+                    <p class="text-xs text-gray-500 leading-relaxed pl-5">
+                        完全可以！行程 100% 依您的偏好訂製，不論是指定五星飯店、奢華 Villa、米其林星級餐廳或特殊體驗皆可全程代訂。
+                    </p>
+                </div>
+
+                <div class="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-stone-200/70 soft-shadow space-y-2">
+                    <h4 class="font-bold text-dark text-sm flex items-center gap-2">
+                        <span class="text-coral-600 font-bold">Q.</span> 客製團的費用會比一般跟團貴很多嗎？
+                    </h4>
+                    <p class="text-xs text-gray-500 leading-relaxed pl-5">
+                        費用主要視您選擇的飯店等級、用餐規格與車輛類型而定。顧問會根據您的預算上限進行最佳化配置，確保高 CP 值。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal (預約行程諮詢表單 Modal) -->
+    <div id="booking-modal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative space-y-5 animate-fade-in">
+            <button onclick="closeBookingModal()"
+                class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 text-xl font-bold cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div>
+                <h3 class="text-xl font-bold text-gray-800">預約行程諮詢</h3>
+                <p id="modal-tour-title" class="text-xs font-semibold text-coral-600 mt-1">行程名稱 (預估價 NT$ 0)</p>
+            </div>
+            <form onsubmit="handleBookingSubmit(event)" class="space-y-4">
+                
+                <!-- 依會員登入動態切換輸入欄位 -->
+                <div id="modal-fields-container" class="space-y-4"></div>
+
+                <button type="submit"
+                    class="w-full py-3 bg-coral-600 hover:bg-coral-700 text-white font-bold rounded-xl transition shadow-md mt-2 text-sm cursor-pointer">
+                    送出預約需求
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 💡 彈跳視窗 1：未登入 (訪客專屬 24 小時專人聯絡彈窗) -->
+    <div id="guest-success-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[10000] flex items-center justify-center p-4" style="display: none;">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4 relative">
+            <button type="button" onclick="closeGuestModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-lg font-bold cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="w-16 h-16 rounded-full bg-teal-50 text-teal-600 mx-auto flex items-center justify-center text-2xl font-bold border border-teal-100 shadow-sm">
+                <i class="fa-solid fa-headset"></i>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-gray-800">恭喜您已預約！</h3>
+                <p class="text-xs text-teal-600 font-semibold mt-2">將會由專人在 24 小時內與您聯絡，感謝您的支持！</p>
+            </div>
+            <button type="button" onclick="closeGuestModal()" class="w-full py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-xl transition cursor-pointer shadow-sm">
+                好的，我知道了
+            </button>
+        </div>
+    </div>
+
+    <!-- 💡 彈跳視窗 2：已登入 (會員專屬 已成功加入購物車彈窗) -->
+    <div id="member-success-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[10000] flex items-center justify-center p-4" style="display: none;">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl space-y-4 relative">
+            <button type="button" onclick="closeMemberModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-lg font-bold cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="w-16 h-16 rounded-full bg-coral-50 text-coral-600 mx-auto flex items-center justify-center text-2xl font-bold border border-coral-100 shadow-sm">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold text-gray-800">已成功加入購物車！</h3>
+                <p class="text-xs text-coral-600 font-semibold mt-2">已為您記錄於「我的購物車」中，可隨時前往檢視諮詢進度！</p>
+            </div>
+            <div class="flex gap-2">
+                <button type="button" onclick="closeMemberModal()" class="flex-1 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs font-bold rounded-xl transition cursor-pointer">
+                    繼續瀏覽
+                </button>
+                <a href="cart.html" class="flex-1 py-2.5 bg-coral-600 hover:bg-coral-700 text-white text-xs font-bold rounded-xl transition cursor-pointer shadow-sm inline-block leading-normal">
+                    查看購物車
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-200/70 border-t border-stone-300/60 mt-12 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+                <div class="space-y-3">
+                    <a href="index.html" class="flex items-center gap-2">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-coral-600 text-white flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-compass"></i>
+                        </div>
+                        <span class="text-xl font-bold tracking-tight text-dark uppercase">Wanderlust</span>
+                    </a>
+                    <div class="text-sm text-gray-600 space-y-1">
+                        <p><i class="fa-solid fa-location-dot w-5 text-gray-400"></i> address: 台北市中正區信義路二段 100 號 8 樓</p>
+                        <p><i class="fa-solid fa-phone w-5 text-gray-400"></i> phone: (02) 2345-6789</p>
+                        <p><i class="fa-solid fa-envelope w-5 text-gray-400"></i> gmail: service@wanderlust.com.tw</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3 md:text-center">
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block">follow us</span>
+                    <div class="flex md:justify-center items-center space-x-4">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 text-white flex items-center justify-center text-xl shadow hover:opacity-90 transition">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl shadow hover:opacity-90 transition">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xl shadow hover:opacity-90 transition">
+                            <i class="fa-brands fa-line"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="space-y-3 md:text-right">
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block">download app</span>
+                    <div class="flex flex-col md:items-end space-y-2">
+                        <button
+                            class="flex items-center justify-center gap-3 bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition w-44">
+                            <i class="fa-brands fa-apple text-xl w-6 text-center"></i>
+                            <div class="text-left leading-tight flex-1">
+                                <div class="text-xs uppercase tracking-wider">Download on the</div>
+                                <div class="text-xs font-semibold">App Store</div>
+                            </div>
+                        </button>
+                        <button
+                            class="flex items-center justify-center gap-3 bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition w-44">
+                            <i class="fa-brands fa-google-play text-xl w-6 text-center"></i>
+                            <div class="text-left leading-tight flex-1">
+                                <div class="text-xs uppercase tracking-wider">Download on the</div>
+                                <div class="text-xs font-semibold">Google Play</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-stone-300/60 mt-8 pt-4 text-center text-xs text-gray-500">
+                © 2026 Wanderlust Travel Agency. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- 頁面邏輯 Script -->
+    <script>
+        const SEARCH_SYNONYMS = {
+            '韓國': ['韓國', '首爾', '釜山', '濟州島', '明洞', '韓風'],
+            '首爾': ['首爾', '韓國', '明洞'],
+            '日本': ['日本', '東京', '大阪', '京都', '北海道', '沖繩', '關西', '東北', '飛驒', '高山', '白川鄉', '小樽'],
+            '東京': ['東京', '日本', '新宿', '目黑川'],
+            '京都': ['京都', '日本', '關西'],
+            '泰國': ['泰國', '曼谷', '清邁', '芭達雅', '普吉島'],
+            '曼谷': ['曼谷', '泰國'],
+            '歐洲': ['歐洲', '法國', '巴黎', '普羅旺斯', '荷蘭', '芬蘭', '西班牙', '巴塞隆納', '瑞士', '冰島', '義大利', '威尼斯', '丹麥', '瑞典', '北歐', '倫敦', '英國'],
+            '法國': ['法國', '巴黎', '普羅旺斯', '歐洲'],
+            '瑞士': ['瑞士', '少女峰', '阿爾卑斯山', '歐洲'],
+            '美國': ['美國', '夏威夷', '紐約', '威基基']
+        };
+
+        const topics = [
+            {
+                badge: "企業員工旅遊",
+                title: "打造專屬團隊凝聚力的極致體驗",
+                desc: "提供豪華包機、五星酒店與特色團建晚宴，滿足百人以上企業獎勵旅遊需求。",
+                img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1000&q=80"
+            },
+            {
+                badge: "家族包團聚會",
+                title: "溫馨舒適的三代同堂專屬旅程",
+                desc: "專屬保姆車全程接送，無障礙行程規劃，安排最貼心的家族同樂時光。",
+                img: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1000&q=80"
+            },
+            {
+                badge: "畢業主題旅行",
+                title: "青春不留白！與好友嗨翻全世界",
+                desc: "主題派對、海島衝浪與極限運動包套，紀錄最燦爛的青春回憶。",
+                img: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1000&q=80"
+            }
+        ];
+
+        function switchTopic(index) {
+            document.querySelectorAll('.topic-btn').forEach((btn, i) => {
+                if (i === index) {
+                    btn.className = "topic-btn w-full flex-1 py-4 px-4 bg-coral-600 text-white font-bold rounded-xl shadow transition text-center flex items-center justify-center cursor-pointer text-sm";
+                } else {
+                    btn.className = "topic-btn w-full flex-1 py-4 px-4 bg-white/90 text-stone-700 font-bold rounded-xl border border-stone-200 hover:bg-coral-50 hover:text-coral-600 transition text-center flex items-center justify-center cursor-pointer text-sm";
+                }
+            });
+
+            const topic = topics[index];
+            document.getElementById('topic-badge').innerText = topic.badge;
+            document.getElementById('topic-title').innerText = topic.title;
+            document.getElementById('topic-desc').innerText = topic.desc;
+            document.getElementById('topic-img').src = topic.img;
+        }
+
+        // 💡 開啟預約 Modal 並根據登入狀態動態切換表單欄位
+        function openBookingModal(tourTitle, price) {
+            document.getElementById('modal-tour-title').innerText = `${tourTitle} (預估價 ${price})`;
+            
+            const currentUser = localStorage.getItem('currentUser');
+            const container = document.getElementById('modal-fields-container');
+
+            if (currentUser) {
+                // 已登入會員：無需重複輸入姓名電話，提供季節與選填備註
+                container.innerHTML = `
+                    <div class="bg-coral-50 border border-coral-200 rounded-xl p-3 text-xs text-coral-700 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check text-coral-600 text-base"></i>
+                        <span>尊榮會員 <strong>${currentUser}</strong> 您好，系統已自動帶入您的會員資料。</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1"><span class="text-red-500 mr-0.5">*</span>預計出發季節 / 月份</label>
+                        <select id="booking-season" class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-coral-600">
+                            <option>2026年 5月 (春季熱門)</option>
+                            <option>2026年 6月 (暑期早鳥)</option>
+                            <option>2026年 7月 (夏日祭典)</option>
+                            <option>2026年 8月 (暑假旺季)</option>
+                            <option>2026年 9月 (秋季早鳥)</option>
+                            <option>2026年 10月 (賞楓季節)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">
+                            其他特殊要求 <span class="text-stone-400 font-normal">(選填，例如：指定五星飯店、餐食禁忌等)</span>
+                        </label>
+                        <textarea id="booking-remarks" rows="3" placeholder="請填寫您的其他詳細需求..."
+                            class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-coral-600"></textarea>
+                    </div>
+                `;
+            } else {
+                // 未登入訪客：姓名與電話為必填欄位
+                container.innerHTML = `
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1"><span class="text-red-500 mr-0.5">*</span>您的姓名</label>
+                        <input type="text" id="booking-name" required placeholder="例如: 王小明"
+                            class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-coral-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1"><span class="text-red-500 mr-0.5">*</span>聯絡電話</label>
+                        <input type="tel" id="booking-phone" required placeholder="例如: 0912345678"
+                            class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-coral-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1"><span class="text-red-500 mr-0.5">*</span>預計出發月份</label>
+                        <select id="booking-season" class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-coral-600">
+                            <option>2026年 5月 (春季熱門)</option>
+                            <option>2026年 6月 (暑期早鳥)</option>
+                            <option>2026年 7月 (夏日祭典)</option>
+                            <option>2026年 8月 (暑假旺季)</option>
+                            <option>2026年 9月 (秋季早鳥)</option>
+                            <option>2026年 10月 (賞楓季節)</option>
+                        </select>
+                    </div>
+                `;
+            }
+
+            document.getElementById('booking-modal').classList.remove('hidden');
+        }
+
+        function closeBookingModal() {
+            document.getElementById('booking-modal').classList.add('hidden');
+        }
+
+        function closeGuestModal() {
+            document.getElementById('guest-success-modal').style.display = 'none';
+        }
+
+        function closeMemberModal() {
+            document.getElementById('member-success-modal').style.display = 'none';
+        }
+
+        // 1. 卡片「立即預約」按鈕提交邏輯 (雙軌判斷)
+        function handleBookingSubmit(event) {
+            event.preventDefault();
+
+            const currentUser = localStorage.getItem('currentUser');
+            const rawTourTitle = document.getElementById('modal-tour-title').innerText;
+            const parts = rawTourTitle.split('(預估價');
+            const titleName = parts[0].trim();
+            const estPrice = parts[1] ? parts[1].replace(')', '').trim() : '專員客製試算中';
+            const travelMonth = document.getElementById('booking-season')?.value || '未指定';
+
+            closeBookingModal();
+
+            // 💡 已登入：不強迫登入，將需求寫入購物車，跳出會員專屬購物車 Modal
+            if (currentUser) {
+                const remarks = document.getElementById('booking-remarks')?.value.trim() || '無特殊需求';
+
+                if (typeof window.addToUserCart === 'function') {
+                    window.addToUserCart({
+                        type: 'custom_request',
+                        title: `客製諮詢：${titleName}`,
+                        price: estPrice,
+                        date: new Date().toLocaleDateString('zh-TW'),
+                        contactName: currentUser,
+                        travelMonth: travelMonth,
+                        remarks: remarks
+                    });
+                }
+
+                document.getElementById('member-success-modal').style.display = 'flex';
+            } 
+            // 💡 未登入：不自動登入，僅跳出「24小時專人聯絡」彈窗
+            else {
+                document.getElementById('guest-success-modal').style.display = 'flex';
+            }
+        }
+
+        // 2. 快速客製需求單提交邏輯 (雙軌判斷)
+        function submitQuickRequest() {
+            const currentUser = localStorage.getItem('currentUser');
+            const fromCity = document.getElementById('quick-from').value.trim() || '未填寫';
+            const toCity = document.getElementById('quick-to').value.trim() || '未指定';
+            const travelDate = document.getElementById('quick-date').value || '洽詢中';
+
+            // 💡 已登入：加入購物車，跳出購物車 Modal
+            if (currentUser) {
+                if (typeof window.addToUserCart === 'function') {
+                    window.addToUserCart({
+                        type: 'custom_request',
+                        title: `客製需求：${fromCity} ➔ ${toCity}`,
+                        price: '需求單已送出',
+                        date: new Date().toLocaleDateString('zh-TW'),
+                        contactName: currentUser,
+                        travelMonth: travelDate,
+                        remarks: `出發地: ${fromCity} | 目的地: ${toCity}`
+                    });
+                }
+                document.getElementById('member-success-modal').style.display = 'flex';
+            } 
+            // 💡 未登入：不自動登入，僅跳出「24小時專人聯絡」彈窗
+            else {
+                document.getElementById('guest-success-modal').style.display = 'flex';
+            }
+
+            document.getElementById('quick-request-form').reset();
+        }
+
+        function expandSearchTerms(searchTerms) {
+            let expanded = [];
+            searchTerms.forEach(term => {
+                expanded.push(term);
+                Object.keys(SEARCH_SYNONYMS).forEach(key => {
+                    if (term.includes(key) || key.includes(term)) {
+                        expanded = expanded.concat(SEARCH_SYNONYMS[key]);
+                    }
+                });
+            });
+            return [...new Set(expanded)];
+        }
+
+        function performHeaderSearch() {
+            const searchInput = document.getElementById('searchInput');
+            if (!searchInput) return;
+
+            const query = searchInput.value.trim().toLowerCase();
+            const rawTerms = query.split(/\s+/).filter(term => term.length > 0);
+
+            const cards = document.querySelectorAll('.card');
+            let totalVisibleCount = 0;
+
+            cards.forEach(card => {
+                const hiddenKeywords = (card.getAttribute('data-keywords') || '').toLowerCase();
+                const visibleText = (card.innerText || '').toLowerCase();
+                const searchableText = `${hiddenKeywords} ${visibleText}`;
+
+                const isMatched = rawTerms.length === 0 || rawTerms.every(term => {
+                    const expandedTerms = expandSearchTerms([term]);
+                    return expandedTerms.some(syn => searchableText.includes(syn));
+                });
+
+                if (isMatched) {
+                    card.style.display = 'flex';
+                    totalVisibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const noResultsMsg = document.getElementById('no-results-msg');
+            if (noResultsMsg) {
+                if (rawTerms.length > 0 && totalVisibleCount === 0) {
+                    noResultsMsg.classList.remove('hidden');
+                } else {
+                    noResultsMsg.classList.add('hidden');
+                }
+            }
+        }
+
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('#searchBtn')) {
+                e.preventDefault();
+                performHeaderSearch();
+            }
+        });
+
+        document.addEventListener('keypress', function (e) {
+            if (e.target && e.target.id === 'searchInput' && e.key === 'Enter') {
+                e.preventDefault();
+                performHeaderSearch();
+            }
+        });
+
+        document.addEventListener('input', function (e) {
+            if (e.target && e.target.id === 'searchInput' && e.target.value.trim() === '') {
+                performHeaderSearch();
+            }
+        });
+    </script>
+    <script src="auth.js"></script>
+</body>
+
+</html>

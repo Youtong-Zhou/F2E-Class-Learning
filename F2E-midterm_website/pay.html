@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust Travel - 行程安全結帳</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coral: { 50: '#F7ECEB', 100: '#E8CECD', 300: '#E2A99B', 600: '#B55353', 700: '#9A4141' },
+                        teal: { 50: '#F3F7F8', 100: '#D8E4E7', 200: '#C2DCDE', 600: '#588B97', 700: '#436B75' },
+                        dark: '#2C3E50',
+                    },
+                    fontFamily: { sans: ['Inter', 'Noto Sans TC', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-[#FAF8F5] text-dark flex flex-col min-h-screen">
+
+    <!-- HEADER (由 auth.js 動態渲染) -->
+    <div id="header-container"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-grow">
+        
+        <!-- 頁面頂部返回與標題 -->
+        <div class="flex items-center justify-between border-b border-stone-200 pb-4">
+            <div class="flex items-center gap-3">
+                <a href="cart.html" class="w-9 h-9 bg-white rounded-xl border border-stone-200 flex items-center justify-center text-stone-600 hover:bg-stone-100 transition">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <div>
+                    <h1 class="text-2xl font-bold text-dark flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-coral-600"></i> 行程安全結帳
+                    </h1>
+                    <p class="text-xs text-gray-500 mt-0.5">請核對行程明細，並選擇優惠折抵與付款方式</p>
+                </div>
+            </div>
+            <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full flex items-center gap-1.5">
+                <i class="fa-solid fa-lock text-[10px]"></i> 256-bit SSL 加密傳輸
+            </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+            <!-- 左側：行程核對與折價券選擇區塊 (佔 2 欄) -->
+            <div class="lg:col-span-2 space-y-6">
+                
+                <!-- 1. 待結帳行程卡片 -->
+                <div class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-gray-800 flex items-center gap-2 border-b border-stone-100 pb-3">
+                        <i class="fa-solid fa-suitcase-rolling text-coral-600"></i> 預訂行程明細
+                    </h3>
+                    <div class="flex flex-col sm:flex-row gap-4 items-center">
+                        <img id="pay-item-img" src="" class="w-full sm:w-32 h-24 object-cover rounded-xl bg-stone-100" alt="Tour Cover">
+                        <div class="space-y-1.5 flex-1 w-full">
+                            <div class="flex items-center justify-between">
+                                <span id="pay-item-tag" class="bg-coral-50 text-coral-600 text-[11px] font-bold px-2.5 py-0.5 rounded-full">已選預訂</span>
+                                <span id="pay-item-date" class="text-xs text-stone-400">訂購日期：--</span>
+                            </div>
+                            <h4 id="pay-item-title" class="text-base font-bold text-gray-800">行程名稱載入中...</h4>
+                            <div id="pay-item-orderid" class="text-xs text-stone-500">訂單編號：--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 折價券使用區塊（提供已領取下拉選單與手動輸入代碼） -->
+                <div class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-gray-800 flex items-center gap-2 border-b border-stone-100 pb-3">
+                        <i class="fa-solid fa-ticket text-teal-600"></i> 使用折價券 / 優惠碼
+                    </h3>
+
+                    <!-- 選項 A：選擇已領取的優惠券 -->
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-stone-600">選擇已領取的優惠券</label>
+                        <select id="claimed-coupon-select" onchange="applySelectCoupon()" class="w-full p-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs text-stone-700 focus:outline-none focus:ring-2 focus:ring-teal-600">
+                            <option value="">-- 請選擇優惠券 --</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center gap-2 my-2">
+                        <div class="h-px bg-stone-200 flex-1"></div>
+                        <span class="text-[11px] text-stone-400">或輸入優惠代碼</span>
+                        <div class="h-px bg-stone-200 flex-1"></div>
+                    </div>
+
+                    <!-- 選項 B：手動輸入代碼 -->
+                    <div class="flex gap-2">
+                        <input type="text" id="manual-coupon-input" placeholder="例如: NEW2026 或 SAKURA1000" class="flex-1 p-2.5 bg-stone-50 border border-stone-200 rounded-xl text-xs uppercase font-mono focus:outline-none focus:ring-2 focus:ring-teal-600">
+                        <button onclick="applyManualCoupon()" class="px-5 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl transition cursor-pointer">
+                            套用代碼
+                        </button>
+                    </div>
+
+                    <!-- 提示套用狀態 -->
+                    <div id="coupon-status-msg" class="text-xs font-semibold hidden p-2.5 rounded-xl border"></div>
+                </div>
+
+                <!-- 3. 付款方式選擇 -->
+                <div class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-gray-800 flex items-center gap-2 border-b border-stone-100 pb-3">
+                        <i class="fa-regular fa-credit-card text-coral-600"></i> 選擇付款方式
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <label class="flex items-center gap-3 p-3.5 border border-coral-600 bg-coral-50/50 rounded-xl cursor-pointer">
+                            <input type="radio" name="pay_method" value="credit" checked class="text-coral-600">
+                            <span class="text-xs font-bold text-gray-800"><i class="fa-solid fa-credit-card mr-1 text-coral-600"></i> 信用卡一次付清</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3.5 border border-stone-200 rounded-xl cursor-pointer hover:bg-stone-50">
+                            <input type="radio" name="pay_method" value="linepay" class="text-coral-600">
+                            <span class="text-xs font-bold text-gray-800"><i class="fa-brands fa-line text-emerald-600 mr-1"></i> LINE Pay</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3.5 border border-stone-200 rounded-xl cursor-pointer hover:bg-stone-50">
+                            <input type="radio" name="pay_method" value="atm" class="text-coral-600">
+                            <span class="text-xs font-bold text-gray-800"><i class="fa-solid fa-building-columns text-teal-600 mr-1"></i> ATM 網路轉帳</span>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 右側：訂單總計金額試算卡片 (佔 1 欄) -->
+            <div class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-md space-y-5 sticky top-28">
+                <h3 class="text-base font-bold text-gray-800 border-b border-stone-100 pb-3">費用總計</h3>
+                
+                <div class="space-y-3 text-xs text-gray-600">
+                    <div class="flex justify-between">
+                        <span>行程原價小計</span>
+                        <span id="summary-original-price" class="font-bold text-gray-800">TWD 0</span>
+                    </div>
+                    <div class="flex justify-between text-teal-600 font-semibold">
+                        <span>折價券折扣金額</span>
+                        <span id="summary-discount-amount">- TWD 0</span>
+                    </div>
+                    <div class="border-t border-stone-100 pt-3 flex justify-between items-baseline">
+                        <span class="text-sm font-bold text-dark">最終應付金額</span>
+                        <span id="summary-final-price" class="text-2xl font-bold text-coral-600">TWD 0</span>
+                    </div>
+                </div>
+
+                <button onclick="confirmPayment()" class="w-full py-3.5 bg-coral-600 hover:bg-coral-700 text-white font-bold rounded-xl transition shadow-md text-sm cursor-pointer flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-lock"></i> 確認安全付款
+                </button>
+
+                <p class="text-[11px] text-stone-400 text-center leading-relaxed">
+                    點擊確認即代表同意 Wanderlust 服務條款與定型化契約。
+                </p>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-200/70 border-t border-stone-300/60 mt-12 py-10">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-500">
+            © 2026 Wanderlust Travel Agency. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- 結帳頁面全邏輯 -->
+    <script src="auth.js"></script>
+    <script>
+        let checkoutItem = null;
+        let originalPrice = 0;
+        let discountAmount = 0;
+
+        // 全域優惠券資料庫
+        const couponDatabase = {
+            'NEW2026': { type: 'percent', value: 0.88, name: '新戶首購 88 折' },
+            'SAKURA1000': { type: 'fixed', value: 1000, name: '日韓賞櫻現折 $1,000' },
+            'EARLY500': { type: 'fixed', value: 500, name: '早鳥訂購現折 $500' }
+        };
+
+        const couponIDMapping = {
+            'btn-coupon-1': 'NEW2026',
+            'btn-coupon-2': 'SAKURA1000',
+            'btn-coupon-3': 'EARLY500'
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initCheckoutData();
+            loadUserClaimedCoupons();
+        });
+
+        // 1. 載入待結帳行程資料
+        function initCheckoutData() {
+            const rawData = localStorage.getItem('checkout_item');
+            if (!rawData) {
+                alert('查無待結帳的行程資料，將帶您返回購物車！');
+                window.location.href = 'cart.html';
+                return;
+            }
+
+            checkoutItem = JSON.parse(rawData);
+
+            document.getElementById('pay-item-title').textContent = checkoutItem.title || '熱門精選行程';
+            document.getElementById('pay-item-img').src = checkoutItem.img || 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=600&q=80';
+            document.getElementById('pay-item-tag').textContent = checkoutItem.tag || '#精選預訂';
+            document.getElementById('pay-item-date').textContent = `訂購日期：${checkoutItem.date || '近期'}`;
+            document.getElementById('pay-item-orderid').textContent = `訂單編號：${checkoutItem.orderId || 'WL-2026-8888'}`;
+
+            // 解析數值金額 (如: "TWD 36,800" 或 "NT$ 85,000" -> 36800)
+            originalPrice = parseInt((checkoutItem.price || '0').replace(/[^0-9]/g, ''), 10) || 0;
+            
+            updatePriceDisplay();
+        }
+
+        // 2. 載入會員已領取的優惠券到下拉選單
+        function loadUserClaimedCoupons() {
+            const currentUser = localStorage.getItem('currentUser');
+            const selectEl = document.getElementById('claimed-coupon-select');
+            if (!currentUser || !selectEl) return;
+
+            const userCouponKey = `claimed_coupons_${currentUser}`;
+            const claimedBtnIds = JSON.parse(localStorage.getItem(userCouponKey) || '[]');
+
+            claimedBtnIds.forEach(btnId => {
+                const code = couponIDMapping[btnId];
+                const info = couponDatabase[code];
+                if (info) {
+                    const option = document.createElement('option');
+                    option.value = code;
+                    option.textContent = `【已領取】${info.name} (優惠碼: ${code})`;
+                    selectEl.appendChild(option);
+                }
+            });
+        }
+
+        // 3. 下拉選單選擇優惠券
+        function applySelectCoupon() {
+            const selectEl = document.getElementById('claimed-coupon-select');
+            const code = selectEl.value;
+            if (code) {
+                document.getElementById('manual-coupon-input').value = code;
+                calculateDiscount(code);
+            } else {
+                discountAmount = 0;
+                hideStatusMsg();
+                updatePriceDisplay();
+            }
+        }
+
+        // 4. 手動輸入套用優惠券
+        function applyManualCoupon() {
+            const inputEl = document.getElementById('manual-coupon-input');
+            const code = (inputEl.value || '').trim().toUpperCase();
+            if (!code) {
+                alert('請先輸入優惠代碼！');
+                return;
+            }
+            calculateDiscount(code);
+        }
+
+        // 5. 計算折扣 logic
+        function calculateDiscount(code) {
+            const info = couponDatabase[code];
+            const msgEl = document.getElementById('coupon-status-msg');
+
+            if (!info) {
+                discountAmount = 0;
+                msgEl.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-red-50 text-red-600 border-red-200';
+                msgEl.textContent = `❌ 無效或已過期的優惠碼：${code}`;
+                msgEl.classList.remove('hidden');
+            } else {
+                if (info.type === 'percent') {
+                    discountAmount = Math.round(originalPrice * (1 - info.value));
+                } else if (info.type === 'fixed') {
+                    discountAmount = info.value;
+                }
+
+                msgEl.className = 'text-xs font-semibold p-2.5 rounded-xl border bg-teal-50 text-teal-700 border-teal-200';
+                msgEl.textContent = `🎉 成功套用【${info.name}】，已為您省下 TWD ${discountAmount.toLocaleString()}！`;
+                msgEl.classList.remove('hidden');
+            }
+
+            updatePriceDisplay();
+        }
+
+        function hideStatusMsg() {
+            document.getElementById('coupon-status-msg').classList.add('hidden');
+        }
+
+        // 6. 更新畫面金額
+        function updatePriceDisplay() {
+            const finalPrice = Math.max(0, originalPrice - discountAmount);
+
+            document.getElementById('summary-original-price').textContent = `TWD ${originalPrice.toLocaleString()}`;
+            document.getElementById('summary-discount-amount').textContent = `- TWD ${discountAmount.toLocaleString()}`;
+            document.getElementById('summary-final-price').textContent = `TWD ${finalPrice.toLocaleString()}`;
+        }
+
+        // 7. 確認付款完成處理
+        function confirmPayment() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) return;
+
+            const finalPriceText = document.getElementById('summary-final-price').textContent;
+
+            if (confirm(`確認要支付 ${finalPriceText} 完成行程預訂嗎？`)) {
+                // 從購物車列表中移除該筆已付款項目
+                if (checkoutItem && typeof checkoutItem.cartIndex !== 'undefined') {
+                    const userCartKey = `user_cart_${currentUser}`;
+                    let cartItems = JSON.parse(localStorage.getItem(userCartKey) || '[]');
+                    cartItems.splice(checkoutItem.cartIndex, 1);
+                    localStorage.setItem(userCartKey, JSON.stringify(cartItems));
+                }
+
+                // 清除暫存
+                localStorage.removeItem('checkout_item');
+
+                alert(`🎉 付款成功！感謝您的預訂，訂單收據已傳送至您的電子信箱。`);
+                window.location.href = 'cart.html';
+            }
+        }
+    </script>
+</body>
+
+</html>

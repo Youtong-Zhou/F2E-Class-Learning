@@ -1,0 +1,1319 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust Travel - 主題團旅</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- 自訂 CSS 檔 -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coral: {
+                            50: '#F7ECEB',
+                            100: '#E8CECD',
+                            300: '#E2A99B',
+                            600: '#B55353',
+                            700: '#9A4141',
+                        },
+                        teal: {
+                            50: '#F3F7F8',
+                            100: '#D8E4E7',
+                            200: '#C2DCDE',
+                            600: '#588B97',
+                            700: '#436B75',
+                        },
+                        dark: '#2C3E50',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-[#FAF8F5] text-dark flex flex-col min-h-screen">
+
+    <!-- HEADER (透過 auth.js 渲染固定 Header) -->
+    <div id="header-container"></div>
+
+    <!-- CONTENT: 主題團旅內容 -->
+    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-12 flex-grow">
+
+        <!-- 查無搜尋結果提示區塊 -->
+        <div id="no-results-msg" class="hidden text-center py-16 space-y-3 bg-white rounded-2xl border border-stone-200 shadow-sm">
+            <i class="fa-solid fa-magnifying-glass text-4xl text-stone-300"></i>
+            <h3 class="text-lg font-bold text-gray-700">找不到符合關鍵字的行程</h3>
+            <p class="text-xs text-gray-400">請嘗試更換其他關鍵字（如：日本、韓國、法國、泰國、櫻花、極光...）</p>
+        </div>
+
+        <!-- 1. flower (賞花主題) -->
+        <div id="flower" class="theme-section space-y-4">
+            <div class="flex items-center space-x-2 border-b-2 border-coral-300 pb-2 mb-2">
+                <i class="fa-solid fa-seedling text-coral-600 text-xl"></i>
+                <h2 class="text-xl font-bold text-dark">flower (賞花主題)</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div onclick="openTourModal('flower-1')"
+                    class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="日本 東京 目黑川 櫻花 櫻花祭 亞洲 關東">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=500&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="flower 1">
+                        <span
+                            class="absolute top-3 left-3 bg-coral-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">熱銷賞櫻</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">topic: 櫻花盛宴</div>
+                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-coral-600 transition">東京目黑川櫻花祭雙飛5日
+                        </h3>
+                        <div class="flex gap-2"><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#賞櫻秘境</span><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#古都巡禮</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-calendar mr-1"></i> 2026/03 - 2026/04</span><span><i
+                                    class="fa-solid fa-plane-departure mr-1"></i> 台北出發</span></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-circle-info mr-1"></i>點擊查看行程</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 36,800</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div onclick="openTourModal('flower-2')"
+                    class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="法國 南法 普羅旺斯 薰衣草 紫色花田 歐洲 蔚藍海岸 尼斯 莊園">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1499002238440-d264edd596ec?auto=format&fit=crop&w=500&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="flower 2">
+                        <span
+                            class="absolute top-3 left-3 bg-purple-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">南法浪漫</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">topic: 薰衣草花海</div>
+                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-coral-600 transition">南法普羅旺斯紫色花田8日
+                        </h3>
+                        <div class="flex gap-2"><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#莊園住宿</span><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#酒莊品醇</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-calendar mr-1"></i> 2026/06 - 2026/07</span><span><i
+                                    class="fa-solid fa-plane-departure mr-1"></i> 台北出發</span></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-circle-info mr-1"></i>點擊查看行程</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 72,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div onclick="openTourModal('flower-3')"
+                    class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="荷蘭 庫肯霍夫 鬱金香 單車 歐洲 阿姆斯特丹 羊角村 風車村">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1520255870062-bd79d3865de7?auto=format&fit=crop&w=500&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="flower 3">
+                        <span
+                            class="absolute top-3 left-3 bg-amber-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">單車慢旅</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">topic: 鬱金香公園</div>
+                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-coral-600 transition">荷蘭庫肯霍夫花園單車浪漫7日
+                        </h3>
+                        <div class="flex gap-2"><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#風車村</span><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#運河遊船</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-calendar mr-1"></i> 2026/04 - 2026/05</span><span><i
+                                    class="fa-solid fa-plane-departure mr-1"></i> 桃園出發</span></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-circle-info mr-1"></i>點擊查看行程</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 65,500</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. snow (雪景主題) -->
+        <div id="snow" class="theme-section space-y-4">
+            <div class="flex items-center space-x-2 border-b-2 border-teal-200 pb-2 mb-2">
+                <i class="fa-regular fa-snowflake text-teal-600 text-xl"></i>
+                <h2 class="text-xl font-bold text-dark">snow (雪景主題)</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div onclick="openTourModal('snow-1')"
+                    class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="日本 飛驒 高山 白川鄉 合掌村 點燈 雪景 溫泉 亞洲 中部 兼六園">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&w=500&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="snow 1">
+                        <span
+                            class="absolute top-3 left-3 bg-teal-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">點燈限定</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-teal-600">topic: 童話合掌村</div>
+                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-teal-600 transition">飛驒高山白川鄉點燈銀白5日
+                        </h3>
+                        <div class="flex gap-2"><span
+                                class="bg-teal-50 text-teal-600 text-xs px-2 py-0.5 rounded">#秘境點燈</span><span
+                                class="bg-teal-50 text-teal-600 text-xs px-2 py-0.5 rounded">#溫泉美食</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-calendar mr-1"></i> 2026/12 - 2027/02</span><span><i
+                                    class="fa-solid fa-plane-departure mr-1"></i> 台北出發</span></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-teal-600 font-medium"><i
+                                    class="fa-solid fa-circle-info mr-1"></i>點擊查看行程</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 42,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div onclick="openTourModal('snow-2')"
+                    class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="芬蘭 羅瓦涅米 聖誕老人村 極光 歐若拉 玻璃屋 北極圈 歐洲 破冰船">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=500&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="snow 2">
+                        <span
+                            class="absolute top-3 left-3 bg-indigo-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">極光追尋</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-teal-600">topic: 追尋歐若拉</div>
+                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-teal-600 transition">芬蘭羅瓦涅米聖誕老人村極光8日
+                        </h3>
+                        <div class="flex gap-2"><span
+                                class="bg-teal-50 text-teal-600 text-xs px-2 py-0.5 rounded">#玻璃屋</span><span
+                                class="bg-teal-50 text-teal-600 text-xs px-2 py-0.5 rounded">#雪橇犬</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-calendar mr-1"></i> 2026/11 - 2027/03</span><span><i
+                                    class="fa-solid fa-plane-departure mr-1"></i> 台北出發</span></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-teal-600 font-medium"><i
+                                    class="fa-solid fa-circle-info mr-1"></i>點擊查看行程</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 128,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div onclick="openTourModal('snow-3')"
+                    class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="日本 北海道 小樽 小樽運河 破冰船 帝王蟹 札幌 旭山動物園 亞洲 滑雪">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1548777123-e216912df7d8?auto=format&fit=crop&w=500&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="snow 3">
+                        <span
+                            class="absolute top-3 left-3 bg-blue-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">破冰體驗</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-teal-600">topic: 北海道雪紛飛</div>
+                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-teal-600 transition">小樽運河破冰船破雪賞景5日
+                        </h3>
+                        <div class="flex gap-2"><span
+                                class="bg-teal-50 text-teal-600 text-xs px-2 py-0.5 rounded">#帝王蟹吃到飽</span><span
+                                class="bg-teal-50 text-teal-600 text-xs px-2 py-0.5 rounded">#滑雪體驗</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-calendar mr-1"></i> 2026/12 - 2027/02</span><span><i
+                                    class="fa-solid fa-plane-departure mr-1"></i> 高雄出發</span></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-teal-600 font-medium"><i
+                                    class="fa-solid fa-circle-info mr-1"></i>點擊查看行程</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 48,900</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. food (美食主題) -->
+        <div id="food" class="theme-section space-y-4">
+            <div class="flex items-center space-x-2 border-b-2 border-coral-300 pb-2 mb-2">
+                <i class="fa-solid fa-utensils text-coral-600 text-xl"></i>
+                <h2 class="text-xl font-bold text-dark">food (美食主題)</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div onclick="openTourModal('food-1')"
+                    class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="泰國 曼谷 米其林 SPA 美食 渡假 東南亞 亞洲 泰式料理">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=500&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="food 1">
+                        <span
+                            class="absolute top-3 left-3 bg-rose-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">星級饗宴</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">topic: 米其林饗宴</div>
+                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-coral-600 transition">
+                            泰國曼谷美饌與星級SPA極致5日</h3>
+                        <div class="flex gap-2"><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#星級餐廳</span><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#奢華酒店</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-calendar mr-1"></i> 全年可出發</span><span><i
+                                    class="fa-solid fa-plane-departure mr-1"></i> 台北出發</span></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-circle-info mr-1"></i>點擊查看行程</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 28,500</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div onclick="openTourModal('food-2')"
+                    class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="西班牙 巴塞隆納 Tapas 酒莊 燉飯 葡萄酒 歐洲 高第">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=500&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="food 2">
+                        <span
+                            class="absolute top-3 left-3 bg-red-700/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">美酒美食</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">topic: 西班牙酒香</div>
+                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-coral-600 transition">
+                            巴塞隆納Tapas與酒莊巡禮7日</h3>
+                        <div class="flex gap-2"><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#海鮮燉飯</span><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#酒品品鑑</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-calendar mr-1"></i> 2026/05 - 2026/10</span><span><i
+                                    class="fa-solid fa-plane-departure mr-1"></i> 台北出發</span></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-circle-info mr-1"></i>點擊查看行程</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 78,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div onclick="openTourModal('food-3')"
+                    class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="香港 米其林 港點 半島酒店 港式飲茶 飲茶 美食 亞洲 港澳">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=500&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="food 3">
+                        <span
+                            class="absolute top-3 left-3 bg-emerald-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">港味經典</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">topic: 港式老饕</div>
+                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-coral-600 transition">香港米其林港點與酒店茶敘3日
+                        </h3>
+                        <div class="flex gap-2"><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#經典茶餐廳</span><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#夜景遊艇</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-calendar mr-1"></i> 每週出發</span><span><i
+                                    class="fa-solid fa-plane-departure mr-1"></i> 台北/高雄</span></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-circle-info mr-1"></i>點擊查看行程</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 16,800</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. culture (文化主題) -->
+        <div id="culture" class="theme-section space-y-4">
+            <div class="flex items-center space-x-2 border-b-2 border-teal-200 pb-2 mb-2">
+                <i class="fa-solid fa-torii-gate text-teal-700 text-xl"></i>
+                <h2 class="text-xl font-bold text-dark">culture (文化主題)</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div onclick="openTourModal('culture-1')"
+                    class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="日本 京都 奈良 神社 和服 清水寺 千本鳥居 古都 亞洲 關西">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=500&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="culture 1">
+                        <span
+                            class="absolute top-3 left-3 bg-amber-700/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">千百古都</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-teal-600">topic: 古都建築</div>
+                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-teal-600 transition">京都奈良神社千年歷史探尋5日
+                        </h3>
+                        <div class="flex gap-2"><span
+                                class="bg-teal-50 text-teal-600 text-xs px-2 py-0.5 rounded">#和服體驗</span><span
+                                class="bg-teal-50 text-teal-600 text-xs px-2 py-0.5 rounded">#茶道研修</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-calendar mr-1"></i> 2026/04 - 2026/11</span><span><i
+                                    class="fa-solid fa-plane-departure mr-1"></i> 台北出發</span></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-teal-600 font-medium"><i
+                                    class="fa-solid fa-circle-info mr-1"></i>點擊查看行程</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 34,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div onclick="openTourModal('culture-2')"
+                    class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="埃及 金字塔 尼羅河 遊輪 人面獅身 開羅 古文明 中東 非洲">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1539650116574-8efeb43e2750?auto=format&fit=crop&w=500&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="culture 2">
+                        <span
+                            class="absolute top-3 left-3 bg-yellow-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">文明遺產</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-teal-600">topic: 埃及法老</div>
+                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-teal-600 transition">埃及金字塔與尼羅河遊輪10日
+                        </h3>
+                        <div class="flex gap-2"><span
+                                class="bg-teal-50 text-teal-600 text-xs px-2 py-0.5 rounded">#神殿遺跡</span><span
+                                class="bg-teal-50 text-teal-600 text-xs px-2 py-0.5 rounded">#五星遊輪</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-calendar mr-1"></i> 2026/10 - 2027/03</span><span><i
+                                    class="fa-solid fa-plane-departure mr-1"></i> 台北出發</span></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-teal-600 font-medium"><i
+                                    class="fa-solid fa-circle-info mr-1"></i>點擊查看行程</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 96,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div onclick="openTourModal('culture-3')"
+                    class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="柬埔寨 吳哥窟 暹粒 高棉微笑 古蹟 世界遺產 東南亞 亞洲">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=500&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="culture 3">
+                        <span
+                            class="absolute top-3 left-3 bg-stone-700/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">世界奇景</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-teal-600">topic: 吳哥窟藝術</div>
+                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-teal-600 transition">柬埔寨高棉微笑古蹟文明5日
+                        </h3>
+                        <div class="flex gap-2"><span
+                                class="bg-teal-50 text-teal-600 text-xs px-2 py-0.5 rounded">#世界遺產</span><span
+                                class="bg-teal-50 text-teal-600 text-xs px-2 py-0.5 rounded">#日出奇景</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-calendar mr-1"></i> 全年可出發</span><span><i
+                                    class="fa-solid fa-plane-departure mr-1"></i> 台北出發</span></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-teal-600 font-medium"><i
+                                    class="fa-solid fa-circle-info mr-1"></i>點擊查看行程</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 29,900</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. others (其他主題) -->
+        <div id="others" class="theme-section space-y-4">
+            <div class="flex items-center space-x-2 border-b-2 border-gray-300 pb-2 mb-2">
+                <i class="fa-solid fa-compass text-gray-500 text-xl"></i>
+                <h2 class="text-xl font-bold text-dark">others (其他主題)</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div onclick="openTourModal('others-1')"
+                    class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="馬爾地夫 水上屋 水上別墅 海島 渡假 蜜月 印度洋 浮潛">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=500&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="others 1">
+                        <span
+                            class="absolute top-3 left-3 bg-cyan-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">海島渡假</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-gray-500">topic: 海島放鬆</div>
+                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-coral-600 transition">馬爾地夫水上別墅奢華假期6日
+                        </h3>
+                        <div class="flex gap-2"><span
+                                class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded">#蜜月推薦</span><span
+                                class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded">#全包式服務</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-calendar mr-1"></i> 全年可出發</span><span><i
+                                    class="fa-solid fa-plane-departure mr-1"></i> 台北出發</span></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-circle-info mr-1"></i>點擊查看行程</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 115,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div onclick="openTourModal('others-2')"
+                    class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="肯亞 馬賽馬拉 野生動物 動物大遷徙 Safari 探索 非洲 國家公園">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=500&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="others 2">
+                        <span
+                            class="absolute top-3 left-3 bg-orange-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">原野探索</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-gray-500">topic: 野生動物狩獵</div>
+                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-coral-600 transition">肯亞國家公園動物大遷徙9日
+                        </h3>
+                        <div class="flex gap-2"><span
+                                class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded">#Safari</span><span
+                                class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded">#帳篷酒店</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-calendar mr-1"></i> 2026/07 - 2026/09</span><span><i
+                                    class="fa-solid fa-plane-departure mr-1"></i> 台北出發</span></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-circle-info mr-1"></i>點擊查看行程</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 145,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div onclick="openTourModal('others-3')"
+                    class="card bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="地中海 郵輪 巡航 巴塞隆納 馬賽 羅馬 歐洲 奢華 郵輪體驗">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=500&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="others 3">
+                        <span
+                            class="absolute top-3 left-3 bg-sky-700/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">海上皇宮</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-gray-500">topic: 郵輪體驗</div>
+                        <h3 class="text-sm font-bold text-gray-800 group-hover:text-coral-600 transition">地中海頂級郵輪奢華巡航11日
+                        </h3>
+                        <div class="flex gap-2"><span
+                                class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded">#多國之旅</span><span
+                                class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded">#甲板娛樂</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-calendar mr-1"></i> 2026/06 - 2026/10</span><span><i
+                                    class="fa-solid fa-plane-departure mr-1"></i> 巴塞隆納登船</span></div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-circle-info mr-1"></i>點擊查看行程</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 108,000</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-200/70 border-t border-stone-300/60 mt-12 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+                <div class="space-y-3">
+                    <a href="index.html" class="flex items-center gap-2">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-coral-600 text-white flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-compass"></i>
+                        </div>
+                        <span class="text-xl font-bold tracking-tight text-dark uppercase">Wanderlust</span>
+                    </a>
+                    <div class="text-sm text-gray-600 space-y-1">
+                        <p><i class="fa-solid fa-location-dot w-5 text-gray-400"></i> address: 台北市中正區信義路二段 100 號 8 樓</p>
+                        <p><i class="fa-solid fa-phone w-5 text-gray-400"></i> phone: (02) 2345-6789</p>
+                        <p><i class="fa-solid fa-envelope w-5 text-gray-400"></i> gmail: service@wanderlust.com.tw</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3 md:text-center">
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block">follow us</span>
+                    <div class="flex md:justify-center items-center space-x-4">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 text-white flex items-center justify-center text-xl shadow hover:opacity-90 transition">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl shadow hover:opacity-90 transition">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xl shadow hover:opacity-90 transition">
+                            <i class="fa-brands fa-line"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="space-y-3 md:text-right">
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block">download app</span>
+                    <div class="flex flex-col md:items-end space-y-2">
+                        <button
+                            class="flex items-center justify-center gap-3 bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition w-44">
+                            <i class="fa-brands fa-apple text-xl w-6 text-center"></i>
+                            <div class="text-left leading-tight flex-1">
+                                <div class="text-xs uppercase tracking-wider">Download on the</div>
+                                <div class="text-xs font-semibold">App Store</div>
+                            </div>
+                        </button>
+                        <button
+                            class="flex items-center justify-center gap-3 bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition w-44">
+                            <i class="fa-brands fa-google-play text-xl w-6 text-center"></i>
+                            <div class="text-left leading-tight flex-1">
+                                <div class="text-xs uppercase tracking-wider">Download on the</div>
+                                <div class="text-xs font-semibold">Google Play</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-stone-300/60 mt-8 pt-4 text-center text-xs text-gray-500">
+                © 2026 Wanderlust Travel Agency. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- 1. 主題團旅行程詳情彈出視窗 (Interactive Tour Modal) -->
+    <div id="tour-modal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div
+            class="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] overflow-hidden flex flex-col shadow-2xl relative my-auto animate-fadeIn">
+
+            <!-- 關閉按鈕 -->
+            <button onclick="closeTourModal()"
+                class="absolute top-4 right-4 z-20 bg-white/80 hover:bg-white text-gray-700 w-10 h-10 rounded-full flex items-center justify-center shadow-lg backdrop-blur-md transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- 彈窗頂部 Hero 區 -->
+            <div class="relative h-64 sm:h-72 w-full bg-stone-900 flex-shrink-0">
+                <img id="modal-img" src="" class="w-full h-full object-cover opacity-90" alt="Tour Cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-4 left-6 right-6 text-white space-y-1">
+                    <div class="flex items-center gap-2">
+                        <span id="modal-topic"
+                            class="bg-coral-600 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">Topic</span>
+                        <span id="modal-city"
+                            class="bg-white/20 backdrop-blur-md text-white text-xs font-medium px-2.5 py-0.5 rounded-full"><i
+                                class="fa-solid fa-plane-departure mr-1"></i>台北出發</span>
+                    </div>
+                    <h2 id="modal-title" class="text-xl sm:text-2xl font-bold tracking-tight text-white">行程標題</h2>
+                    <div id="modal-tags" class="flex flex-wrap gap-2 pt-1"></div>
+                </div>
+            </div>
+
+            <!-- 可滾動主體 -->
+            <div class="p-6 overflow-y-auto space-y-6 flex-grow">
+
+                <!-- 梯次與人數選擇區 -->
+                <div class="bg-stone-50 rounded-2xl p-4 border border-stone-200/80 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-sm font-bold text-dark flex items-center gap-2">
+                            <i class="fa-regular fa-calendar-check text-coral-600"></i> 選擇出發梯次與人數
+                        </h4>
+                        <span class="text-xs text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded"><i
+                                class="fa-solid fa-check mr-1"></i>成團保證</span>
+                    </div>
+
+                    <!-- 出發日期按鈕列表 -->
+                    <div id="modal-date-options" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+
+                    <!-- 人數選擇計數器 -->
+                    <div class="flex items-center justify-between pt-3 border-t border-stone-200/60">
+                        <span class="text-sm font-medium text-gray-700">參團人數（同行者）</span>
+                        <div
+                            class="flex items-center space-x-3 bg-white border border-stone-300 rounded-xl px-3 py-1.5 shadow-sm">
+                            <button onclick="changePassengerCount(-1)"
+                                class="w-7 h-7 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold flex items-center justify-center transition">-</button>
+                            <span id="modal-passenger-count"
+                                class="font-bold text-gray-800 text-base w-6 text-center">1</span>
+                            <button onclick="changePassengerCount(1)"
+                                class="w-7 h-7 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold flex items-center justify-center transition">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 切換選項 -->
+                <div class="border-b border-stone-200 flex space-x-6 text-sm font-bold">
+                    <button id="tab-btn-itinerary" onclick="switchModalTab('itinerary')"
+                        class="pb-3 text-coral-600 border-b-2 border-coral-600 transition flex items-center gap-2">
+                        <i class="fa-solid fa-route"></i> 每日詳細行程
+                    </button>
+                    <button id="tab-btn-inclusions" onclick="switchModalTab('inclusions')"
+                        class="pb-3 text-gray-400 hover:text-gray-600 transition flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-check"></i> 費用包含與不含
+                    </button>
+                    <button id="tab-btn-notes" onclick="switchModalTab('notes')"
+                        class="pb-3 text-gray-400 hover:text-gray-600 transition flex items-center gap-2">
+                        <i class="fa-solid fa-circle-exclamation"></i> 旅遊須知
+                    </button>
+                </div>
+
+                <!-- Tab Content 1: 每日行程 Timeline -->
+                <div id="tab-content-itinerary" class="space-y-4">
+                    <div id="modal-timeline" class="relative pl-6 border-l-2 border-coral-200 space-y-6"></div>
+                </div>
+
+                <!-- Tab Content 2: 費用包含與不含 -->
+                <div id="tab-content-inclusions" class="hidden space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-emerald-50/60 rounded-2xl p-4 border border-emerald-100 space-y-2">
+                            <h5 class="text-sm font-bold text-emerald-800 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-emerald-600"></i> 團費包含項目
+                            </h5>
+                            <ul class="text-xs text-emerald-900/80 space-y-1.5 list-disc list-inside">
+                                <li>來回國際經濟艙機票與機場稅金</li>
+                                <li>行程所列之全程住宿及每日精選早餐</li>
+                                <li>行程說明書所列之景觀門票與交通接駁專車</li>
+                                <li>500萬元旅遊履約責任險與20萬意外醫療險</li>
+                                <li>每日隨團專業中文導遊與領隊服務</li>
+                            </ul>
+                        </div>
+                        <div class="bg-rose-50/60 rounded-2xl p-4 border border-rose-100 space-y-2">
+                            <h5 class="text-sm font-bold text-rose-800 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-xmark text-rose-600"></i> 團費不含項目
+                            </h5>
+                            <ul class="text-xs text-rose-900/80 space-y-1.5 list-disc list-inside">
+                                <li>新辦護照及各國簽證相關規費</li>
+                                <li>司機、導遊、領隊服務小費（建議每日 TWD 300）</li>
+                                <li>行程以外之個人私人消費與自費體驗行程</li>
+                                <li>單人房差價（若需指定單人入住）</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Content 3: 旅遊須知 -->
+                <div id="tab-content-notes"
+                    class="hidden space-y-3 text-xs text-gray-600 leading-relaxed bg-stone-50 p-4 rounded-2xl border border-stone-200">
+                    <p><strong>【護照效期】</strong> 請確認護照自出發日起算有 6 個月以上之有效期限。</p>
+                    <p><strong>【成團人數】</strong> 本行程最低成團人數為 10 人，上限為 26 人。</p>
+                    <p><strong>【訂金說明】</strong> 預訂後請於 24 小時內完成訂金支付（每人 TWD 5,000），方完成席位保留。</p>
+                </div>
+
+            </div>
+
+            <!-- 彈窗 Sticky 底部操作列 -->
+            <div
+                class="bg-stone-100 border-t border-stone-200 p-4 px-6 flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
+                <div class="flex items-baseline space-x-2">
+                    <span class="text-xs text-gray-500">團費總計:</span>
+                    <span id="modal-total-price" class="text-2xl font-bold text-coral-600">TWD 0</span>
+                    <span class="text-xs text-gray-400"> (含稅金)</span>
+                </div>
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <button onclick="downloadPDF()"
+                        class="flex-1 sm:flex-none border border-stone-300 bg-white hover:bg-stone-50 text-gray-700 text-xs font-semibold py-2.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-file-pdf text-rose-600"></i> 下載 PDF 行程
+                    </button>
+                    <button onclick="confirmBooking()"
+                        class="flex-1 sm:flex-none bg-coral-600 hover:bg-coral-700 text-white text-xs font-bold py-2.5 px-6 rounded-xl transition shadow-md shadow-coral-600/30 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> 立即預訂參團
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 2. 預訂成功 Toast / Modal -->
+    <div id="success-modal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl relative animate-fadeIn">
+            <div
+                class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 class="text-xl font-bold text-dark">參團預訂確認！</h3>
+            <p class="text-xs text-gray-500 leading-relaxed">
+                您的預訂要求已成功送出，系統已為您保留席位。<br>專屬旅遊顧問將於 24 小時內與您聯繫確認細節。
+            </p>
+            <div class="bg-stone-50 p-3 rounded-xl text-left text-xs space-y-1 text-gray-600 border border-stone-200">
+                <p><strong>訂單編號：</strong><span id="success-order-id"
+                        class="font-mono text-coral-600">WL-2026-8892</span></p>
+                <p><strong>預訂行程：</strong><span id="success-tour-title">東京櫻花雙飛5日</span></p>
+                <p><strong>參團人數：</strong><span id="success-people">1 人</span></p>
+                <p><strong>實付總額：</strong><span id="success-amount" class="font-bold text-dark">TWD 36,800</span></p>
+            </div>
+            <button onclick="closeSuccessModal()"
+                class="w-full bg-dark text-white text-xs font-bold py-3 rounded-xl hover:bg-stone-800 transition">
+                完成並返回
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. Floating Toast Alert (用於下載提示) -->
+    <div id="toast"
+        class="fixed bottom-6 right-6 bg-dark text-white px-5 py-3 rounded-2xl shadow-xl z-50 hidden flex items-center space-x-3 border border-stone-700 transition-all duration-300">
+        <i class="fa-solid fa-circle-down text-emerald-400 text-lg"></i>
+        <span id="toast-message" class="text-xs font-medium">行程說明書 PDF 已開始下載...</span>
+    </div>
+
+    <!-- 引入全域 Auth 核心腳本 -->
+    <script src="auth.js"></script>
+
+    <!-- 主題團旅專用互動資料庫與邏輯 Script -->
+    <script>
+        // 國家與城市關聯同義詞字典
+        const SEARCH_SYNONYMS = {
+            '韓國': ['韓國', '首爾', '釜山', '濟州島', '明洞', '韓風'],
+            '首爾': ['首爾', '韓國', '明洞'],
+            '日本': ['日本', '東京', '大阪', '京都', '北海道', '沖繩', '關西', '東北', '飛驒', '高山', '白川鄉', '小樽'],
+            '東京': ['東京', '日本', '新宿', '目黑川'],
+            '京都': ['京都', '日本', '關西'],
+            '北海道': ['北海道', '日本', '札幌', '小樽', '美瑛'],
+            '沖繩': ['沖繩', '日本', '恩納村'],
+            '泰國': ['泰國', '曼谷', '清邁', '芭達雅', '普吉島'],
+            '曼谷': ['曼谷', '泰國'],
+            '歐洲': ['歐洲', '法國', '巴黎', '普羅旺斯', '荷蘭', '庫肯霍夫', '芬蘭', '羅瓦涅米', '西班牙', '巴塞隆納', '瑞士', '冰島', '義大利', '威尼斯', '丹麥', '瑞典', '北歐', '倫敦', '英國'],
+            '法國': ['法國', '巴黎', '普羅旺斯', '歐洲'],
+            '瑞士': ['瑞士', '少女峰', '阿爾卑斯山', '歐洲'],
+            '美國': ['美國', '夏威夷', '紐約', '威基基']
+        };
+
+        // 完整的 15 團旅資料庫
+        const tourDatabase = {
+            'flower-1': {
+                title: '東京目黑川櫻花祭雙飛5日',
+                topic: '櫻花盛宴',
+                city: '台北出發',
+                price: 36800,
+                img: 'https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=800&q=80',
+                tags: ['#賞櫻秘境', '#目黑川夜櫻', '#古都巡禮', '#保證入宿二連泊'],
+                dates: [
+                    { date: '2026/03/28 (六)', status: '即將完售', priceDiff: 0 },
+                    { date: '2026/04/02 (四)', status: '最佳花期', priceDiff: 2000 },
+                    { date: '2026/04/08 (三)', status: '熱銷中', priceDiff: -1500 }
+                ],
+                timeline: [
+                    { day: 'Day 1', title: '桃園空港 ➔ 東京成田 ➔ 飯店 Check-in ➔ 夜漫目黑川粉紅櫻花隧道', desc: '搭乘豪華客機前往東京，抵達後開展櫻花季序幕，走訪東京第一夜櫻名所目黑川。' },
+                    { day: 'Day 2', title: '上野恩賜公園賞櫻 ➔ 新宿御苑庭園 ➔ 淺草觀音寺與隅田公園櫻花搭景', desc: '體驗滿開櫻花林下的日式野餐氛圍，欣賞各式不同品種之櫻花競相綻放。' },
+                    { day: 'Day 3', title: '富士山河口湖櫻花祭 ➔ 新倉山淺間公園遠眺富士山櫻景 ➔ 溫泉飯店極味料理', desc: '前往經典富士山賞櫻秘境，晚上安排溫泉名湯泡湯洗滌身心。' },
+                    { day: 'Day 4', title: '全日自由活動（推薦：銀座購物 或 東京迪士尼樂園櫻花季特別活動）', desc: '自由探索東京繁華街道或享用頂級和牛燒肉料理。' },
+                    { day: 'Day 5', title: '明治神宮外苑漫步 ➔ 成田空港 ➔ 返回台北', desc: '選購精緻伴手禮後專車前往空港，結束難忘的東京賞櫻之旅。' }
+                ]
+            },
+            'flower-2': {
+                title: '南法普羅旺斯紫色花田8日',
+                topic: '薰衣草花海',
+                city: '台北出發',
+                price: 72000,
+                img: 'https://images.unsplash.com/photo-1499002238440-d264edd596ec?auto=format&fit=crop&w=800&q=80',
+                tags: ['#莊園住宿', '#酒莊品醇', '#索村花海', '#米其林推薦'],
+                dates: [
+                    { date: '2026/06/15 (一)', status: '預約中', priceDiff: 0 },
+                    { date: '2026/07/01 (三)', status: '盛花期', priceDiff: 3500 }
+                ],
+                timeline: [
+                    { day: 'Day 1-2', title: '台北 ➔ 尼斯 ➔ 蔚藍海岸漫步 ➔ 聖保羅藝術山城', desc: '飛抵南法度假勝地尼斯，感受地中海溫暖陽光與山城藝術氣息。' },
+                    { day: 'Day 3-4', title: '瓦朗索爾薰衣草高原 ➔ 索村秘境花田 ➔ 古法精油工作坊', desc: '置身無邊無際紫色薰衣草花海，體驗南法浪漫鄉村步調。' },
+                    { day: 'Day 5-6', title: '亞維農教皇宮 ➔ 教皇新堡酒莊品鑑隆河頂級佳釀 ➔ 石頭城', desc: '巡禮古老城堡與世界遺產，品嚐優雅精緻的普羅旺斯風味料理。' },
+                    { day: 'Day 7-8', title: '馬賽港灣漫步 ➔ 機場 ➔ 台北', desc: '帶著滿滿的花香與回億返抵國門。' }
+                ]
+            },
+            'flower-3': {
+                title: '荷蘭庫肯霍夫花園單車浪漫7日',
+                topic: '鬱金香公園',
+                city: '桃園出發',
+                price: 65500,
+                img: 'https://images.unsplash.com/photo-1520255870062-bd79d3865de7?auto=format&fit=crop&w=800&q=80',
+                tags: ['#風車村', '#運河遊船', '#庫肯霍夫', '#單車輕旅行'],
+                dates: [
+                    { date: '2026/04/12 (日)', status: '熱銷中', priceDiff: 0 },
+                    { date: '2026/04/25 (六)', status: '即將完售', priceDiff: 1800 }
+                ],
+                timeline: [
+                    { day: 'Day 1-2', title: '桃園 ➔ 阿姆斯特丹 ➔ 羊角村玻璃船悠遊水鄉秘境', desc: '抵達後前往「綠色威尼斯」羊角村，安排乘坐平底木船穿越蘆葦屋。' },
+                    { day: 'Day 3-4', title: '庫肯霍夫鬱金香公園 ➔ 花田單車輕騎體驗 ➔ 扎安斯斯漢斯風車村', desc: '探索百萬株鬱金香綻放的公園，騎行於繽紛花海農田間。' },
+                    { day: 'Day 5-7', title: '阿姆斯特丹運河巡航 ➔ 梵谷博物館 ➔ 返回桃園', desc: '參觀名畫珍藏，品嚐荷蘭煎餅與起司，畫下完美句點。' }
+                ]
+            },
+            'snow-1': {
+                title: '飛驒高山白川鄉點燈銀白5日',
+                topic: '童話合掌村',
+                city: '台北出發',
+                price: 42000,
+                img: 'https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&w=800&q=80',
+                tags: ['#秘境點燈', '#飛驒和牛', '#奧飛驒溫泉', '#古街漫步'],
+                dates: [
+                    { date: '2026/12/20 (日)', status: '熱銷中', priceDiff: 0 },
+                    { date: '2027/01/15 (五)', status: '限定點燈梯次', priceDiff: 4000 }
+                ],
+                timeline: [
+                    { day: 'Day 1', title: '台北 ➔ 中部國際空港 ➔ 飛驒高山老街散策', desc: '走訪「飛驒小京都」三町古街，品嚐現烤飛驒和牛握壽司。' },
+                    { day: 'Day 2', title: '世界遺產白川鄉合掌村 ➔ 夜間夜雪特別點燈儀式（保證入場）', desc: '宛如走進童話雪水晶球，親臨一年僅數夜的白川鄉浪漫點燈。' },
+                    { day: 'Day 3', title: '新穗高雙層纜車 ➔ 360度雪白阿爾卑斯連峰展望台 ➔ 露天溫泉', desc: '搭乘纜車穿梭雪白樹冰世界，晚間享用飛驒牛會席料理。' },
+                    { day: 'Day 4-5', title: '金澤兼六園雪吊絕景 ➔ 名古屋榮町購物 ➔ 台北', desc: '感受日本三大名園之冬日雪景，輕鬆採買伴手禮。' }
+                ]
+            },
+            'snow-2': {
+                title: '芬蘭羅瓦涅米聖誕老人村極光8日',
+                topic: '追尋歐若拉',
+                city: '台北出發',
+                price: 128000,
+                img: 'https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=800&q=80',
+                tags: ['#圓頂玻璃屋', '#極光雪橇', '#破冰船體驗', '#跨越北極圈'],
+                dates: [
+                    { date: '2026/11/18 (三)', status: '開放預約', priceDiff: 0 },
+                    { date: '2026/12/24 (四)', status: '聖誕狂歡節', priceDiff: 8500 }
+                ],
+                timeline: [
+                    { day: 'Day 1-2', title: '台北 ➔ 赫爾辛基 ➔ 轉機至羅瓦涅米 ➔ 跨越北極圈證書', desc: '前往拉普蘭夢幻雪原，拜訪真正的聖誕老人並寄出極地明信片。' },
+                    { day: 'Day 3-4', title: '哈士奇犬拉雪橇 ➔ 馴鹿極光尋蹤 ➔ 入住全景玻璃穹頂屋', desc: '躺在溫暖的玻璃屋床舖上，仰望滿天星斗與舞動的璀璨綠色極光。' },
+                    { day: 'Day 5-8', title: '桑普號破冰船體驗 ➔ 極地冰浮 ➔ 赫爾辛基市區巡禮 ➔ 台北', desc: '穿上特殊防寒衣浮於冰海之中，感受極致極地冒險。' }
+                ]
+            },
+            'snow-3': {
+                title: '小樽運河破冰船破雪賞景5日',
+                topic: '北海道雪紛飛',
+                city: '高雄出發',
+                price: 48900,
+                img: 'https://images.unsplash.com/photo-1548777123-e216912df7d8?auto=format&fit=crop&w=800&q=80',
+                tags: ['#帝王蟹吃到飽', '#GARINKO破冰船', '#小樽音樂盒', '#三大名湯'],
+                dates: [
+                    { date: '2026/12/10 (四)', status: '熱銷中', priceDiff: 0 },
+                    { date: '2027/01/20 (三)', status: '流冰高峰期', priceDiff: 2500 }
+                ],
+                timeline: [
+                    { day: 'Day 1-2', title: '高雄 ➔ 新千歲 ➔ 浪漫小樽運河 ➔ 北一硝子館與音樂館', desc: '感受瓦斯燈映照下的運河浪漫雪景，品嚐夢幻甜點 LeTAO 蛋糕。' },
+                    { day: 'Day 3-5', title: '紋別GARINKO號破冰船 ➔ 旭山動物園企鵝散步 ➔ 札幌大通公園 ➔ 高雄', desc: '震撼切碎鄂霍次克海流冰，觀賞可愛企鵝雪地上遊行。' }
+                ]
+            },
+            'food-1': {
+                title: '泰國曼谷美饌與星級SPA極致5日',
+                topic: '米其林饗宴',
+                city: '台北出發',
+                price: 28500,
+                img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
+                tags: ['#米其林一星', '#無邊際泳池', '#泰式頂級SPA', '#高空酒吧'],
+                dates: [
+                    { date: '2026/05/10 (日)', status: '天天出發', priceDiff: 0 },
+                    { date: '2026/06/18 (四)', status: '熱銷中', priceDiff: 1000 }
+                ],
+                timeline: [
+                    { day: 'Day 1-2', title: '台北 ➔ 曼谷 ➔ 米其林推薦泰式料理 ➔ 昭披耶河奢華遊艇晚餐', desc: '入住五星級奢華飯店，享用精緻泰國皇室風格美饌。' },
+                    { day: 'Day 3-5', title: 'Divana 頂級貴婦 SPA ➔ 高空 360 度觀景酒吧 ➔ ICONSIAM ➔ 台北', desc: '放鬆身心體驗全套香氛按摩，享受時尚泰國漫旅。' }
+                ]
+            },
+            'food-2': {
+                title: '巴塞隆納Tapas與酒莊巡禮7日',
+                topic: '西班牙酒香',
+                city: '台北出發',
+                price: 78000,
+                img: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
+                tags: ['#西班牙燉飯', '#Tapas巡禮', '#高第建築', '#CAVA酒莊'],
+                dates: [
+                    { date: '2026/05/20 (三)', status: '熱銷中', priceDiff: 0 },
+                    { date: '2026/09/15 (二)', status: '葡萄採收季', priceDiff: 3000 }
+                ],
+                timeline: [
+                    { day: 'Day 1-7', title: '聖家堂 ➔ 奎爾公園 ➔ 蘭布拉大道老老饕 Tapas 吧 ➔ CAVA 氣泡酒莊', desc: '沉浸在高第建築狂想中，邊品嚐頂級伊比利火腿與香濃海鮮燉飯。' }
+                ]
+            },
+            'food-3': {
+                title: '香港米其林港點與酒店茶敘3日',
+                topic: '港式老饕',
+                city: '台北/高雄',
+                price: 16800,
+                img: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80',
+                tags: ['#米其林三星', '#半島酒店茶敘', '#維港夜景', '#老字號茶餐廳'],
+                dates: [
+                    { date: '2026/04/17 (五)', status: '週末出發', priceDiff: 0 },
+                    { date: '2026/05/01 (五)', status: '連假熱門', priceDiff: 2200 }
+                ],
+                timeline: [
+                    { day: 'Day 1-3', title: '飛往香港 ➔ 龍景軒港點饗宴 ➔ 半島酒店經典英式下午茶 ➔ 維港天星小輪', desc: '舌尖上的香港饕客之旅，品嚐燒鵝、流沙包與道地鴛鴦奶茶。' }
+                ]
+            },
+            'culture-1': {
+                title: '京都奈良神社千年歷史探尋5日',
+                topic: '古都建築',
+                city: '台北出發',
+                price: 34000,
+                img: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80',
+                tags: ['#和服體驗', '#清水寺', '#伏見稻荷', '#奈良餵鹿'],
+                dates: [
+                    { date: '2026/04/15 (三)', status: '熱銷中', priceDiff: 0 },
+                    { date: '2026/05/10 (日)', status: '綠意新綠', priceDiff: -1000 }
+                ],
+                timeline: [
+                    { day: 'Day 1-5', title: '關西空港 ➔ 京都和服體驗 ➔ 清水寺 ➔ 千本鳥居 ➔ 奈良公園東大寺', desc: '換上正統和服穿梭古色古香的石板街道，親身體驗千年中日文化歷史沉澱。' }
+                ]
+            },
+            'culture-2': {
+                title: '埃及金字塔與尼羅河遊輪10日',
+                topic: '埃及法老',
+                city: '台北出發',
+                price: 96000,
+                img: 'https://images.unsplash.com/photo-1539650116574-8efeb43e2750?auto=format&fit=crop&w=800&q=80',
+                tags: ['#金字塔內參觀', '#五星尼羅河遊輪', '#人面獅身像', '#帝王谷'],
+                dates: [
+                    { date: '2026/10/12 (一)', status: '涼爽旺季', priceDiff: 0 },
+                    { date: '2026/11/05 (四)', status: '預約中', priceDiff: 1500 }
+                ],
+                timeline: [
+                    { day: 'Day 1-10', title: '開羅 ➔ 吉薩金字塔群 ➔ 埃及博物館 ➔ 亞斯文登尼羅河遊輪 ➔ 阿布辛貝神殿', desc: '乘坐五星級豪華遊輪沿尼羅河漂流，揭開四千年古埃及神秘法老面紗。' }
+                ]
+            },
+            'culture-3': {
+                title: '柬埔寨高棉微笑古蹟文明5日',
+                topic: '吳哥窟藝術',
+                city: '台北出發',
+                price: 29900,
+                img: 'https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=800&q=80',
+                tags: ['#世界七大奇景', '#小吳哥日出', '#巴戎寺高棉微笑', '#塔普倫寺'],
+                dates: [
+                    { date: '2026/06/05 (五)', status: '天天出發', priceDiff: 0 },
+                    { date: '2026/08/14 (五)', status: '熱銷中', priceDiff: 800 }
+                ],
+                timeline: [
+                    { day: 'Day 1-5', title: '暹粒 ➔ 大吳哥城高棉的微笑 ➔ 塔普倫寺探秘 ➔ 小吳哥窟日出美景', desc: '感受石雕藝術頂峰與古老石窟被巨樹盤根錯節的驚嘆景致。' }
+                ]
+            },
+            'others-1': {
+                title: '馬爾地夫水上別墅奢華假期6日',
+                topic: '海島放鬆',
+                city: '台北出發',
+                price: 115000,
+                img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
+                tags: ['#水上屋連泊', '#全包式AI服務', '#水飛體驗', '#浮潛尋鯨鯊'],
+                dates: [
+                    { date: '2026/05/01 (五)', status: '蜜月首選', priceDiff: 0 },
+                    { date: '2026/07/15 (三)', status: '熱銷中', priceDiff: 4000 }
+                ],
+                timeline: [
+                    { day: 'Day 1-6', title: '台北 ➔ 馬爾地夫 ➔ 水上飛機前往度假島 ➔ 水上Villa自由浮潛', desc: '沉浸在蒂芙尼藍色海洋中，獨享私人家用泳池與無限量星級美食饗宴。' }
+                ]
+            },
+            'others-2': {
+                title: '肯亞國家公園動物大遷徙9日',
+                topic: '野生動物狩獵',
+                city: '台北出發',
+                price: 145000,
+                img: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=800&q=80',
+                tags: ['#Safari四輪驅動', '#馬賽馬拉', '#帳篷渡假村', '#大遷徙震撼'],
+                dates: [
+                    { date: '2026/07/20 (一)', status: '遷徙黃金期', priceDiff: 5000 },
+                    { date: '2026/08/10 (一)', status: '即將完售', priceDiff: 6500 }
+                ],
+                timeline: [
+                    { day: 'Day 1-9', title: '奈洛比 ➔ 馬賽馬拉保護區 ➔ 追尋非洲五霸 Big 5 ➔ 瑪拉河牛羚渡河', desc: '乘坐吉普車親眼目睹百萬野生動物大遷徙橫渡狂暴河流的生命壯舉。' }
+                ]
+            },
+            'others-3': {
+                title: '地中海頂級郵輪奢華巡航11日',
+                topic: '郵輪體驗',
+                city: '巴塞隆納登船',
+                price: 108000,
+                img: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=800&q=80',
+                tags: ['#陽台艙房', '#多國精華巡禮', '#全天候百匯', '#百老匯劇院'],
+                dates: [
+                    { date: '2026/06/10 (三)', status: '熱銷中', priceDiff: 0 },
+                    { date: '2026/08/01 (六)', status: '暑期熱門', priceDiff: 5000 }
+                ],
+                timeline: [
+                    { day: 'Day 1-11', title: '巴塞隆納 ➔ 馬賽 ➔ 熱那亞 ➔ 羅馬 ➔ 帕爾馬 ➔ 巴塞隆納', desc: '一晚解鎖一個地中海名城，免去搬行李勞頓，享受船上奢華娛樂與豐富美食。' }
+                ]
+            }
+        };
+
+        // 當前開啟的行程狀態
+        let currentTour = null;
+        let selectedDateIndex = 0;
+        let passengerCount = 1;
+
+        // 💡 擴充同義詞關鍵字搜尋
+        function expandSearchTerms(searchTerms) {
+            let expanded = [];
+            searchTerms.forEach(term => {
+                expanded.push(term);
+                Object.keys(SEARCH_SYNONYMS).forEach(key => {
+                    if (term.includes(key) || key.includes(term)) {
+                        expanded = expanded.concat(SEARCH_SYNONYMS[key]);
+                    }
+                });
+            });
+            return [...new Set(expanded)];
+        }
+
+        // 💡 主題團旅頁面即時同義詞搜尋與過濾 logic
+        function performThemeSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+            const rawTerms = query.split(/\s+/).filter(term => term.length > 0);
+
+            const sections = document.querySelectorAll('.theme-section');
+            let totalVisibleCards = 0;
+
+            sections.forEach(section => {
+                const cards = section.querySelectorAll('.card');
+                let sectionVisibleCount = 0;
+
+                cards.forEach(card => {
+                    const hiddenKeywords = (card.getAttribute('data-keywords') || '').toLowerCase();
+                    const visibleText = (card.innerText || '').toLowerCase();
+                    const searchableText = `${hiddenKeywords} ${visibleText}`;
+
+                    const isMatched = rawTerms.length === 0 || rawTerms.every(term => {
+                        const expandedTerms = expandSearchTerms([term]);
+                        return expandedTerms.some(syn => searchableText.includes(syn));
+                    });
+
+                    if (isMatched) {
+                        card.style.display = 'flex';
+                        sectionVisibleCount++;
+                        totalVisibleCards++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                if (sectionVisibleCount > 0) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+
+            const noResultsMsg = document.getElementById('no-results-msg');
+            if (noResultsMsg) {
+                if (rawTerms.length > 0 && totalVisibleCards === 0) {
+                    noResultsMsg.classList.remove('hidden');
+                } else {
+                    noResultsMsg.classList.add('hidden');
+                }
+            }
+        }
+
+        // 打開 Modal 函式
+        function openTourModal(tourId) {
+            currentTour = tourDatabase[tourId];
+            if (!currentTour) return;
+
+            selectedDateIndex = 0;
+            passengerCount = 1;
+
+            document.getElementById('modal-img').src = currentTour.img;
+            document.getElementById('modal-topic').textContent = currentTour.topic;
+            document.getElementById('modal-city').innerHTML = `<i class="fa-solid fa-plane-departure mr-1"></i>${currentTour.city}`;
+            document.getElementById('modal-title').textContent = currentTour.title;
+            document.getElementById('modal-passenger-count').textContent = passengerCount;
+
+            const tagsContainer = document.getElementById('modal-tags');
+            tagsContainer.innerHTML = currentTour.tags.map(t => `<span class="bg-white/20 backdrop-blur-md text-white text-xs px-2.5 py-0.5 rounded-md font-light">${t}</span>`).join('');
+
+            renderDateOptions();
+            renderTimeline();
+            switchModalTab('itinerary');
+            updateTotalPrice();
+
+            const modal = document.getElementById('tour-modal');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTourModal() {
+            const modal = document.getElementById('tour-modal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function renderDateOptions() {
+            const container = document.getElementById('modal-date-options');
+            container.innerHTML = currentTour.dates.map((d, index) => {
+                const isSelected = index === selectedDateIndex;
+                const basePrice = currentTour.price + d.priceDiff;
+                return `
+                    <button onclick="selectDate(${index})" class="p-3 rounded-xl text-left border transition-all ${isSelected ? 'border-coral-600 bg-coral-50/80 ring-2 ring-coral-600/20' : 'border-stone-200 bg-white hover:border-stone-300'}">
+                        <div class="flex items-center justify-between text-xs font-bold text-gray-800">
+                            <span>${d.date}</span>
+                            <span class="${isSelected ? 'text-coral-600' : 'text-gray-400'}">${d.status}</span>
+                        </div>
+                        <div class="text-xs ${isSelected ? 'text-coral-600' : 'text-gray-500'} font-semibold mt-1">
+                            TWD ${basePrice.toLocaleString()} /人
+                        </div>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectDate(index) {
+            selectedDateIndex = index;
+            renderDateOptions();
+            updateTotalPrice();
+        }
+
+        function changePassengerCount(delta) {
+            if (passengerCount + delta >= 1 && passengerCount + delta <= 10) {
+                passengerCount += delta;
+                document.getElementById('modal-passenger-count').textContent = passengerCount;
+                updateTotalPrice();
+            }
+        }
+
+        function updateTotalPrice() {
+            if (!currentTour) return;
+            const singlePrice = currentTour.price + currentTour.dates[selectedDateIndex].priceDiff;
+            const total = singlePrice * passengerCount;
+            document.getElementById('modal-total-price').textContent = `TWD ${total.toLocaleString()}`;
+        }
+
+        function renderTimeline() {
+            const timelineContainer = document.getElementById('modal-timeline');
+            timelineContainer.innerHTML = currentTour.timeline.map(item => `
+                <div class="relative group">
+                    <div class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-coral-600 border-4 border-white shadow-sm"></div>
+                    <div class="space-y-1">
+                        <span class="text-xs font-bold text-coral-600 uppercase tracking-wider">${item.day}</span>
+                        <h5 class="text-sm font-bold text-dark">${item.title}</h5>
+                        <p class="text-xs text-gray-500 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function switchModalTab(tabName) {
+            const itineraryTab = document.getElementById('tab-content-itinerary');
+            const inclusionsTab = document.getElementById('tab-content-inclusions');
+            const notesTab = document.getElementById('tab-content-notes');
+
+            const btnItinerary = document.getElementById('tab-btn-itinerary');
+            const btnInclusions = document.getElementById('tab-btn-inclusions');
+            const btnNotes = document.getElementById('tab-btn-notes');
+
+            itineraryTab.classList.add('hidden');
+            inclusionsTab.classList.add('hidden');
+            notesTab.classList.add('hidden');
+
+            btnItinerary.className = 'pb-3 text-gray-400 hover:text-gray-600 transition flex items-center gap-2';
+            btnInclusions.className = 'pb-3 text-gray-400 hover:text-gray-600 transition flex items-center gap-2';
+            btnNotes.className = 'pb-3 text-gray-400 hover:text-gray-600 transition flex items-center gap-2';
+
+            if (tabName === 'itinerary') {
+                itineraryTab.classList.remove('hidden');
+                btnItinerary.className = 'pb-3 text-coral-600 border-b-2 border-coral-600 font-bold transition flex items-center gap-2';
+            } else if (tabName === 'inclusions') {
+                inclusionsTab.classList.remove('hidden');
+                btnInclusions.className = 'pb-3 text-coral-600 border-b-2 border-coral-600 font-bold transition flex items-center gap-2';
+            } else if (tabName === 'notes') {
+                notesTab.classList.remove('hidden');
+                btnNotes.className = 'pb-3 text-coral-600 border-b-2 border-coral-600 font-bold transition flex items-center gap-2';
+            }
+        }
+
+        function downloadPDF() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // 預訂參團確認（包含寫入 addToUserCart）
+        function confirmBooking() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                alert("請先登入會員，方可完成參團預訂！");
+                openAuthModal('login');
+                return;
+            }
+
+            if (!currentTour) return;
+
+            const singlePrice = currentTour.price + currentTour.dates[selectedDateIndex].priceDiff;
+            const total = singlePrice * passengerCount;
+            const orderId = 'WL-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+            const totalPriceText = `TWD ${total.toLocaleString()}`;
+
+            addToUserCart({
+                orderId: orderId,
+                title: `${currentTour.title} (${passengerCount}人 - ${currentTour.dates[selectedDateIndex].date})`,
+                price: totalPriceText,
+                img: currentTour.img,
+                tag: currentTour.tags ? currentTour.tags[0] : '#主題團旅'
+            });
+
+            document.getElementById('success-order-id').textContent = orderId;
+            document.getElementById('success-tour-title').textContent = currentTour.title;
+            document.getElementById('success-people').textContent = `${passengerCount} 人 (${currentTour.dates[selectedDateIndex].date})`;
+            document.getElementById('success-amount').textContent = totalPriceText;
+
+            closeTourModal();
+            document.getElementById('success-modal').classList.remove('hidden');
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.add('hidden');
+        }
+
+        // 事件監聽與 URL 搜尋參數載入處理
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('query');
+            const searchInput = document.getElementById('searchInput');
+            if (query && searchInput) {
+                searchInput.value = query;
+                performThemeSearch();
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('#searchBtn')) {
+                e.preventDefault();
+                performThemeSearch();
+            }
+        });
+
+        document.addEventListener('keypress', function (e) {
+            if (e.target && e.target.id === 'searchInput' && e.key === 'Enter') {
+                e.preventDefault();
+                performThemeSearch();
+            }
+        });
+
+        document.addEventListener('input', function (e) {
+            if (e.target && e.target.id === 'searchInput' && e.target.value.trim() === '') {
+                performThemeSearch();
+            }
+        });
+    </script>
+</body>
+
+</html>

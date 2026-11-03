@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust Travel - 首頁</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coral: { 50: '#F7ECEB', 100: '#E8CECD', 300: '#E2A99B', 600: '#B55353', 700: '#9A4141' },
+                        teal: { 50: '#F3F7F8', 100: '#D8E4E7', 200: '#C2DCDE', 600: '#588B97', 700: '#436B75' },
+                        dark: '#2C3E50',
+                    },
+                    fontFamily: { sans: ['Inter', 'Noto Sans TC', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .carousel-slide {
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* 💡 無縫向左自動滾動動畫 */
+        @keyframes marquee-left {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .animate-marquee-left {
+            display: flex;
+            width: max-content;
+            animation: marquee-left 25s linear infinite;
+        }
+
+        .animate-marquee-left:hover {
+            animation-play-state: paused;
+        }
+    </style>
+</head>
+
+<body class="bg-[#FAF8F5] text-dark flex flex-col min-h-screen">
+
+    <!-- HEADER & NAVBAR -->
+    <div id="header-container"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-12 flex-grow pt-28">
+
+        <!-- 1. HERO SLIDESHOW -->
+        <div class="relative bg-teal-100/60 rounded-2xl overflow-hidden shadow-lg h-80 sm:h-96 group border border-stone-200/50">
+            <div id="hero-carousel" class="relative w-full h-full">
+                <!-- Slide 1 -->
+                <div class="hero-slide carousel-slide active">
+                    <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1400&q=80" alt="Hero Theme Tour 1" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/30 to-transparent flex flex-col justify-end p-6 sm:p-10 text-white">
+                        <span class="bg-coral-600 text-xs px-3 py-1 rounded-full w-max font-semibold tracking-wider mb-2">主題團旅首推 #1</span>
+                        <h1 class="text-xl font-bold">日本關西賞櫻與溫泉奢華饗宴 5 日</h1>
+                        <p class="text-sm text-gray-200 mt-1 max-w-xl">走訪京都春櫻古都秘境，入住私人湯屋溫泉飯店。</p>
+                        <div class="mt-4">
+                            <a href="theme.html#flower" class="inline-block px-5 py-2.5 bg-coral-600 hover:bg-coral-700 text-white font-medium rounded-lg shadow transition text-sm">探索主題團旅 <i class="fa-solid fa-arrow-right ml-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="hero-slide carousel-slide">
+                    <img src="https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=1400&q=80" alt="Hero Theme Tour 2" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/30 to-transparent flex flex-col justify-end p-6 sm:p-10 text-white">
+                        <span class="bg-teal-600 text-xs px-3 py-1 rounded-full w-max font-semibold tracking-wider mb-2">主題團旅首推 #2</span>
+                        <h1 class="text-xl font-bold">冰島極光與藍湖溫泉夢幻探索 8 日</h1>
+                        <p class="text-sm text-gray-200 mt-1 max-w-xl">夜尋璀璨綠光弧線，沉浸地熱藍湖溫泉。</p>
+                        <div class="mt-4">
+                            <a href="theme.html#snow" class="inline-block px-5 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg shadow transition text-sm">觀看雪景主題 <i class="fa-solid fa-arrow-right ml-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="hero-slide carousel-slide">
+                    <img src="https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=1400&q=80" alt="Hero Theme Tour 3" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/30 to-transparent flex flex-col justify-end p-6 sm:p-10 text-white">
+                        <span class="bg-coral-600 text-xs px-3 py-1 rounded-full w-max font-semibold tracking-wider mb-2">主題團旅首推 #3</span>
+                        <h1 class="text-xl font-bold">義大利米其林美食與酒莊品醇之旅 7 日</h1>
+                        <p class="text-sm text-gray-200 mt-1 max-w-xl">品嚐托斯卡尼古堡私房私廚，走訪世紀酒莊慢活鑑賞。</p>
+                        <div class="mt-4">
+                            <a href="theme.html#food" class="inline-block px-5 py-2.5 bg-coral-600 hover:bg-coral-700 text-white font-medium rounded-lg shadow transition text-sm">品味美食行程 <i class="fa-solid fa-arrow-right ml-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="hero-prev" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 hover:bg-black/60 text-white flex items-center justify-center transition opacity-0 group-hover:opacity-100 z-20 cursor-pointer"><i class="fa-solid fa-chevron-left"></i></button>
+            <button id="hero-next" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 hover:bg-black/60 text-white flex items-center justify-center transition opacity-0 group-hover:opacity-100 z-20 cursor-pointer"><i class="fa-solid fa-chevron-right"></i></button>
+
+            <div id="hero-dots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-20">
+                <span class="hero-dot w-3 h-3 bg-white rounded-full cursor-pointer opacity-100 shadow"></span>
+                <span class="hero-dot w-3 h-3 bg-white/50 hover:bg-white rounded-full cursor-pointer transition"></span>
+                <span class="hero-dot w-3 h-3 bg-white/50 hover:bg-white rounded-full cursor-pointer transition"></span>
+            </div>
+        </div>
+
+        <!-- 2. 四大品牌服務優勢區塊 -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            <div class="bg-white/90 p-4 sm:p-5 rounded-2xl border border-stone-200/70 soft-shadow flex items-center space-x-3.5">
+                <div class="w-11 h-11 rounded-xl bg-coral-50 text-coral-600 flex items-center justify-center text-xl shadow-sm"><i class="fa-solid fa-shield-halved"></i></div>
+                <div><div class="text-xs sm:text-sm font-bold text-dark">品質嚴選保證</div><div class="text-[11px] text-gray-400 mt-0.5">精選星級住宿與航班</div></div>
+            </div>
+            <div class="bg-white/90 p-4 sm:p-5 rounded-2xl border border-stone-200/70 soft-shadow flex items-center space-x-3.5">
+                <div class="w-11 h-11 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl shadow-sm"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                <div><div class="text-xs sm:text-sm font-bold text-dark">價格透明公開</div><div class="text-[11px] text-gray-400 mt-0.5">無隱藏費用與購物</div></div>
+            </div>
+            <div class="bg-white/90 p-4 sm:p-5 rounded-2xl border border-stone-200/70 soft-shadow flex items-center space-x-3.5">
+                <div class="w-11 h-11 rounded-xl bg-coral-50 text-coral-600 flex items-center justify-center text-xl shadow-sm"><i class="fa-solid fa-plane-circle-check"></i></div>
+                <div><div class="text-xs sm:text-sm font-bold text-dark">成團率保障</div><div class="text-[11px] text-gray-400 mt-0.5">指定梯次保證出發</div></div>
+            </div>
+            <div class="bg-white/90 p-4 sm:p-5 rounded-2xl border border-stone-200/70 soft-shadow flex items-center space-x-3.5">
+                <div class="w-11 h-11 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl shadow-sm"><i class="fa-solid fa-headset"></i></div>
+                <div><div class="text-xs sm:text-sm font-bold text-dark">24H 專人服務</div><div class="text-[11px] text-gray-400 mt-0.5">專業顧問一對一服務</div></div>
+            </div>
+        </div>
+
+        <!-- 3. MIDDLE GRID -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- LEFT 2 COLUMNS: 當季推薦旅遊輪播圖 -->
+            <div class="lg:col-span-2 bg-white/90 rounded-2xl p-5 border border-stone-200/70 soft-shadow flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4 border-b border-stone-100 pb-3">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-fire text-coral-600 text-xl"></i>
+                            <h2 class="text-xl font-bold text-dark">當季推薦行程</h2>
+                        </div>
+                        <span class="text-xs text-gray-400 font-medium">經典當季提案</span>
+                    </div>
+
+                    <div class="relative h-72 sm:h-80 rounded-xl overflow-hidden group">
+                        <div id="seasonal-carousel" class="relative w-full h-full">
+                            <div class="seasonal-slide carousel-slide active">
+                                <img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=900&q=80" class="w-full h-full object-cover" alt="日本賞楓之旅">
+                                <div class="absolute inset-0 bg-gradient-to-t from-dark/90 via-dark/20 to-transparent p-5 flex flex-col justify-end text-white">
+                                    <div class="flex gap-2 mb-1">
+                                        <span class="bg-coral-600 text-white text-xs px-2 py-0.5 rounded font-medium">#日本賞楓之旅</span>
+                                        <span class="bg-teal-600 text-white text-xs px-2 py-0.5 rounded font-medium">#秘境溫泉</span>
+                                    </div>
+                                    <h3 class="text-sm font-bold">日本關西秋季賞楓與秘境溫泉 5 日</h3>
+                                    <p class="text-sm text-gray-200 line-clamp-1 mt-1">嵐山小火車紅葉隧道、清水寺夜間特別拜觀、一泊二食頂級會席。</p>
+                                    <div class="mt-3 flex items-center justify-between">
+                                        <span class="text-coral-300 font-bold text-xl">TWD 39,800 <span class="text-xs font-normal text-gray-300">起</span></span>
+                                        <a href="theme.html" class="px-3.5 py-1.5 bg-coral-600 hover:bg-coral-700 text-white text-sm font-medium rounded-lg transition">查看詳情</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="seasonal-slide carousel-slide">
+                                <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=900&q=80" class="w-full h-full object-cover" alt="秋蟹品嚐之旅">
+                                <div class="absolute inset-0 bg-gradient-to-t from-dark/90 via-dark/20 to-transparent p-5 flex flex-col justify-end text-white">
+                                    <div class="flex gap-2 mb-1">
+                                        <span class="bg-coral-600 text-white text-xs px-2 py-0.5 rounded font-medium">#秋蟹品嚐之旅</span>
+                                        <span class="bg-teal-600 text-white text-xs px-2 py-0.5 rounded font-medium">#旬味美饌</span>
+                                    </div>
+                                    <h3 class="text-sm font-bold">旬味盛宴・秋蟹品嚐與日本三景慢遊 5 日</h3>
+                                    <p class="text-sm text-gray-200 line-clamp-1 mt-1">產地直達活松葉蟹三大吃、宮島嚴島神社大鳥居。</p>
+                                    <div class="mt-3 flex items-center justify-between">
+                                        <span class="text-coral-300 font-bold text-xl">TWD 42,500 <span class="text-xs font-normal text-gray-300">起</span></span>
+                                        <a href="theme.html#food" class="px-3.5 py-1.5 bg-coral-600 hover:bg-coral-700 text-white text-sm font-medium rounded-lg transition">查看詳情</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="seasonal-slide carousel-slide">
+                                <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=900&q=80" class="w-full h-full object-cover" alt="歐洲古蹟之旅">
+                                <div class="absolute inset-0 bg-gradient-to-t from-dark/90 via-dark/20 to-transparent p-5 flex flex-col justify-end text-white">
+                                    <div class="flex gap-2 mb-1">
+                                        <span class="bg-teal-600 text-white text-xs px-2 py-0.5 rounded font-medium">#歐洲古蹟之旅</span>
+                                        <span class="bg-coral-600 text-white text-xs px-2 py-0.5 rounded font-medium">#世界遺產</span>
+                                    </div>
+                                    <h3 class="text-sm font-bold">歐洲中世紀古蹟與文化藝術巡禮 10 日</h3>
+                                    <p class="text-sm text-gray-200 line-clamp-1 mt-1">羅馬競技場、梵蒂岡博物館專人導覽。</p>
+                                    <div class="mt-3 flex items-center justify-between">
+                                        <span class="text-coral-300 font-bold text-xl">TWD 89,000 <span class="text-xs font-normal text-gray-300">起</span></span>
+                                        <a href="theme.html#culture" class="px-3.5 py-1.5 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium rounded-lg transition">查看詳情</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button id="seasonal-prev" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-20 cursor-pointer"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <button id="seasonal-next" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition z-20 cursor-pointer"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                </div>
+
+                <div id="seasonal-dots" class="flex justify-center space-x-2 mt-4">
+                    <span class="seasonal-dot w-2.5 h-2.5 bg-coral-600 rounded-full cursor-pointer"></span>
+                    <span class="seasonal-dot w-2.5 h-2.5 bg-gray-300 hover:bg-gray-400 rounded-full cursor-pointer transition"></span>
+                    <span class="seasonal-dot w-2.5 h-2.5 bg-gray-300 hover:bg-gray-400 rounded-full cursor-pointer transition"></span>
+                </div>
+            </div>
+
+            <!-- RIGHT 1 COLUMN: 折價券專區 -->
+            <div class="bg-white/90 rounded-2xl p-5 border border-stone-200/70 soft-shadow flex flex-col justify-between space-y-4">
+                <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-ticket text-coral-600 text-xl"></i>
+                        <h2 class="text-xl font-bold text-dark">獨家優惠折價券</h2>
+                    </div>
+                    <span class="text-xs bg-coral-50 text-coral-600 px-2 py-0.5 rounded-full font-semibold">專屬驚喜</span>
+                </div>
+
+                <div class="space-y-3.5">
+                    <div onclick="claimCoupon('早鳥專屬折價券 NT$1,000', 'WANDER2026', 'btn-coupon-1')" class="ticket-card rounded-xl p-3.5 flex items-center justify-between shadow-sm hover:shadow-md transition cursor-pointer group">
+                        <div>
+                            <div class="text-xs font-semibold text-coral-600 uppercase">🌸 早鳥專屬折價券</div>
+                            <div class="text-xl font-bold text-dark">折 TWD <span class="text-coral-600">$1,000</span></div>
+                            <div class="text-xs text-gray-400 mt-0.5">點擊領取折扣碼</div>
+                        </div>
+                        <button id="btn-coupon-1" class="px-3 py-1.5 bg-coral-600 text-white text-xs font-semibold rounded-lg hover:bg-coral-700 cursor-pointer">領取</button>
+                    </div>
+
+                    <div onclick="claimCoupon('VIP 95折優惠碼', 'VIP95OFF', 'btn-coupon-2')" class="ticket-card rounded-xl p-3.5 flex items-center justify-between shadow-sm hover:shadow-md transition cursor-pointer group">
+                        <div>
+                            <div class="text-xs font-semibold text-teal-600 uppercase">☕ VIP 95折優惠</div>
+                            <div class="text-xl font-bold text-dark">全館行程 <span class="text-teal-600">95 折</span></div>
+                            <div class="text-xs text-gray-400 mt-0.5">點擊領取全館優惠碼</div>
+                        </div>
+                        <button id="btn-coupon-2" class="px-3 py-1.5 bg-coral-600 text-white text-xs font-semibold rounded-lg hover:bg-coral-700 cursor-pointer">領取</button>
+                    </div>
+
+                    <div onclick="claimCoupon('日本上網卡免費券', 'JAPANSIM5D', 'btn-coupon-3')" class="ticket-card rounded-xl p-3.5 flex items-center justify-between shadow-sm hover:shadow-md transition cursor-pointer group">
+                        <div>
+                            <div class="text-xs font-semibold text-gray-600 uppercase">📶 日本上網卡折抵</div>
+                            <div class="text-xl font-bold text-dark">免費 <span class="text-dark">5 日網卡</span></div>
+                            <div class="text-xs text-gray-400 mt-0.5">點擊領取免費網卡序號</div>
+                        </div>
+                        <button id="btn-coupon-3" class="px-3 py-1.5 bg-coral-600 text-white text-xs font-semibold rounded-lg hover:bg-coral-700 cursor-pointer">領取</button>
+                    </div>
+                </div>
+
+                <div class="bg-teal-50/80 rounded-xl p-3 text-center border border-teal-100">
+                    <p class="text-xs text-teal-700 font-medium"><i class="fa-solid fa-gift mr-1"></i> 領取後登入即可跨頁面留存優惠碼</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. 熱門目的地快速入口 -->
+        <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-stone-200 pb-3">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-map-location-dot text-coral-600 text-xl"></i>
+                    <h2 class="text-xl font-bold text-dark">熱門目的地快速探索</h2>
+                </div>
+                <span class="text-xs text-gray-400 font-medium">一鍵探索熱門國家</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <a href="allsearch.html?query=日本" class="relative group rounded-2xl overflow-hidden h-36 border border-stone-200/70 shadow-sm hover:shadow-lg transition">
+                    <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="日本">
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/20 to-transparent flex flex-col justify-end p-4 text-white">
+                        <span class="text-xs font-semibold text-coral-300">🇯🇵 JAPAN</span>
+                        <span class="text-base font-bold">日本漫遊</span>
+                    </div>
+                </a>
+                <a href="allsearch.html?query=韓國" class="relative group rounded-2xl overflow-hidden h-36 border border-stone-200/70 shadow-sm hover:shadow-lg transition">
+                    <img src="https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="韓國">
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/20 to-transparent flex flex-col justify-end p-4 text-white">
+                        <span class="text-xs font-semibold text-teal-200">🇰🇷 KOREA</span>
+                        <span class="text-base font-bold">韓風潮流</span>
+                    </div>
+                </a>
+                <a href="allsearch.html?query=歐洲" class="relative group rounded-2xl overflow-hidden h-36 border border-stone-200/70 shadow-sm hover:shadow-lg transition">
+                    <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="歐洲">
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/20 to-transparent flex flex-col justify-end p-4 text-white">
+                        <span class="text-xs font-semibold text-amber-200">🇪🇺 EUROPE</span>
+                        <span class="text-base font-bold">浪漫歐洲</span>
+                    </div>
+                </a>
+                <a href="allsearch.html?query=泰國" class="relative group rounded-2xl overflow-hidden h-36 border border-stone-200/70 shadow-sm hover:shadow-lg transition">
+                    <img src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="泰國">
+                    <div class="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/20 to-transparent flex flex-col justify-end p-4 text-white">
+                        <span class="text-xs font-semibold text-rose-300">🇹🇭 THAILAND</span>
+                        <span class="text-base font-bold">泰國渡假</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- 5. 💡 旅客真心好評（向左無縫自動動態輪播區塊） -->
+        <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-stone-200 pb-3">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-comments text-teal-600 text-xl"></i>
+                    <h2 class="text-xl font-bold text-dark">旅客真心好評</h2>
+                </div>
+                <span class="text-xs text-stone-400 font-medium">來自真實參加者的口碑評價 (滑鼠懸停暫停)</span>
+            </div>
+
+            <!-- 向左輪播軌道容器 -->
+            <div class="overflow-hidden w-full relative rounded-2xl py-2">
+                <div id="reviews-marquee-track" class="animate-marquee-left gap-6 flex"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-200/70 border-t border-stone-300/60 mt-12 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+                <div class="space-y-3">
+                    <a href="index.html" class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-coral-600 text-white flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-compass"></i>
+                        </div>
+                        <span class="text-xl font-bold tracking-tight text-dark uppercase">Wanderlust</span>
+                    </a>
+                    <div class="text-sm text-gray-600 space-y-1">
+                        <p><i class="fa-solid fa-location-dot w-5 text-gray-400"></i> address: 台北市中正區信義路二段 100 號 8 樓</p>
+                        <p><i class="fa-solid fa-phone w-5 text-gray-400"></i> phone: (02) 2345-6789</p>
+                        <p><i class="fa-solid fa-envelope w-5 text-gray-400"></i> gmail: service@wanderlust.com.tw</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3 md:text-center">
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block">follow us</span>
+                    <div class="flex md:justify-center items-center space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 text-white flex items-center justify-center text-xl shadow hover:opacity-90 transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl shadow hover:opacity-90 transition"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xl shadow hover:opacity-90 transition"><i class="fa-brands fa-line"></i></a>
+                    </div>
+                </div>
+
+                <div class="space-y-3 md:text-right">
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block">download app</span>
+                    <div class="flex flex-col md:items-end space-y-2">
+                        <button class="flex items-center justify-center gap-3 bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition w-44">
+                            <i class="fa-brands fa-apple text-xl w-6 text-center"></i>
+                            <div class="text-left leading-tight flex-1">
+                                <div class="text-xs uppercase tracking-wider">Download on the</div>
+                                <div class="text-xs font-semibold">App Store</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-stone-300/60 mt-8 pt-4 text-center text-xs text-gray-500">
+                © 2026 Wanderlust Travel Agency. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script>
+        // Hero Carousel Logic
+        const heroSlides = document.querySelectorAll('.hero-slide');
+        const heroDots = document.querySelectorAll('.hero-dot');
+        let currentHero = 0;
+
+        function showHeroSlide(index) {
+            heroSlides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+                if (heroDots[i]) {
+                    heroDots[i].className = i === index ? 'hero-dot w-3 h-3 bg-white rounded-full cursor-pointer opacity-100 shadow' : 'hero-dot w-3 h-3 bg-white/50 hover:bg-white rounded-full cursor-pointer transition';
+                }
+            });
+            currentHero = index;
+        }
+
+        document.getElementById('hero-next')?.addEventListener('click', () => showHeroSlide((currentHero + 1) % heroSlides.length));
+        document.getElementById('hero-prev')?.addEventListener('click', () => showHeroSlide((currentHero - 1 + heroSlides.length) % heroSlides.length));
+        heroDots.forEach((dot, index) => dot.addEventListener('click', () => showHeroSlide(index)));
+        setInterval(() => showHeroSlide((currentHero + 1) % heroSlides.length), 5000);
+
+        // Seasonal Carousel Logic
+        const seasonalSlides = document.querySelectorAll('.seasonal-slide');
+        const seasonalDots = document.querySelectorAll('.seasonal-dot');
+        let currentSeasonal = 0;
+
+        function showSeasonalSlide(index) {
+            seasonalSlides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+                if (seasonalDots[i]) {
+                    seasonalDots[i].className = i === index ? 'seasonal-dot w-2.5 h-2.5 bg-coral-600 rounded-full cursor-pointer' : 'seasonal-dot w-2.5 h-2.5 bg-gray-300 hover:bg-gray-400 rounded-full cursor-pointer transition';
+                }
+            });
+            currentSeasonal = index;
+        }
+
+        document.getElementById('seasonal-next')?.addEventListener('click', () => showSeasonalSlide((currentSeasonal + 1) % seasonalSlides.length));
+        document.getElementById('seasonal-prev')?.addEventListener('click', () => showSeasonalSlide((currentSeasonal - 1 + seasonalSlides.length) % seasonalSlides.length));
+        seasonalDots.forEach((dot, index) => dot.addEventListener('click', () => showSeasonalSlide(index)));
+        setInterval(() => showSeasonalSlide((currentSeasonal + 1) % seasonalSlides.length), 4000);
+
+        // 自動連續向左平滑滾動好評軌道
+        function initReviewsMarquee() {
+            const track = document.getElementById('reviews-marquee-track');
+            if (!track) return;
+
+            const defaultReviews = [
+                { userName: '陳小姐 (台北)', title: '日本關西賞櫻5日', rating: 5, comment: '這次帶家人參加關西櫻花團，行程時間拿捏得非常好，導遊也很貼心照顧長輩！入住的溫泉飯店餐點真的讚。', date: '2026/03' },
+                { userName: '林先生 (科技公司)', title: '夏威夷客製包團7日', rating: 5, comment: '公司員旅請 Wanderlust 客製包團去夏威夷，晚宴跟包機安排得超級無懈可擊，全公司同仁都讚不絕口！', date: '2026/02' },
+                { userName: '張小姐 (台中)', title: '冰島極光夢幻探索8日', rating: 5, comment: '極光團真的看到了超震撼的綠光！玻璃屋住得舒服，小編跟線上客服在出發前的問答回應也很迅速。', date: '2026/01' }
+            ];
+
+            const userReviews = JSON.parse(localStorage.getItem('homepage_reviews') || '[]');
+            const allReviews = [...userReviews, ...defaultReviews];
+
+            let cardsHTML = '';
+            allReviews.forEach(rev => {
+                const stars = '★'.repeat(rev.rating || 5);
+                cardsHTML += `
+                    <div class="w-80 sm:w-96 bg-white/90 backdrop-blur-md rounded-2xl p-5 border border-stone-200/70 soft-shadow flex flex-col justify-between flex-shrink-0 space-y-3">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <div class="text-amber-400 text-xs font-bold">${stars}</div>
+                                <span class="text-[11px] text-gray-400">${rev.date} 參團</span>
+                            </div>
+                            <p class="text-xs text-gray-600 leading-relaxed italic line-clamp-3">「${rev.comment}」</p>
+                        </div>
+                        <div class="flex items-center gap-3 pt-3 border-t border-stone-100">
+                            <div class="w-8 h-8 rounded-full bg-coral-100 text-coral-600 flex items-center justify-center font-bold text-xs">${rev.userName.charAt(0).toUpperCase()}</div>
+                            <div>
+                                <div class="text-xs font-bold text-gray-800">${rev.userName}</div>
+                                <div class="text-[10px] text-coral-600 font-medium">參加：${rev.title}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // 複製雙倍長度達成無縫持續向左循環
+            track.innerHTML = cardsHTML + cardsHTML;
+        }
+
+        document.addEventListener('DOMContentLoaded', initReviewsMarquee);
+    </script>
+</body>
+
+</html>

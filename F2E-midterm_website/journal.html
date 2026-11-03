@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust Travel - 我的旅行日誌與足跡</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coral: { 50: '#F7ECEB', 100: '#E8CECD', 300: '#E2A99B', 600: '#B55353', 700: '#9A4141' },
+                        teal: { 50: '#F3F7F8', 100: '#D8E4E7', 200: '#C2DCDE', 600: '#588B97', 700: '#436B75' },
+                        dark: '#2C3E50',
+                    },
+                    fontFamily: { sans: ['Inter', 'Noto Sans TC', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-[#FAF8F5] text-dark flex flex-col min-h-screen">
+
+    <!-- HEADER (由 auth.js 動態渲染) -->
+    <div id="header-container"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10 flex-grow pt-28">
+        
+        <!-- 頁面標題 -->
+        <div class="border-b border-stone-200 pb-4 flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-dark flex items-center gap-2.5">
+                    <i class="fa-solid fa-book-journal-whills text-coral-600"></i> 我的旅行日誌與足跡
+                </h1>
+                <p class="text-xs text-gray-500 mt-1">記錄您曾參與的旅程，點擊已完成評價卡片可隨時查看您親自填寫的心得與資料！</p>
+            </div>
+            <div id="journal-count-display" class="text-xs font-semibold text-gray-600 bg-white px-3.5 py-1.5 rounded-full border border-stone-200 shadow-sm">
+                共 0 篇旅行足跡
+            </div>
+        </div>
+
+        <!-- 未登入提示 -->
+        <div id="not-logged-in-journal" class="hidden bg-white p-12 rounded-2xl text-center shadow-sm border border-stone-200 space-y-4">
+            <i class="fa-solid fa-lock text-4xl text-stone-300"></i>
+            <h3 class="text-lg font-bold text-gray-700">請先登入會員</h3>
+            <p class="text-xs text-gray-400">登入後即可檢視您的旅行日記與評價獎勵</p>
+            <button onclick="openAuthModal('login')" class="px-6 py-2.5 bg-coral-600 hover:bg-coral-700 text-white text-xs font-bold rounded-xl transition shadow-md cursor-pointer">
+                立即登入
+            </button>
+        </div>
+
+        <!-- 無購買紀錄時顯示空狀態 -->
+        <div id="journal-empty" class="hidden bg-white p-12 rounded-2xl text-center shadow-sm border border-stone-200 space-y-4">
+            <i class="fa-solid fa-compass-drafting text-4xl text-stone-300"></i>
+            <h3 class="text-lg font-bold text-gray-700">目前尚無已購買或參與的行程紀錄</h3>
+            <p class="text-xs text-gray-400">完成第一個預訂行程後，即可在此寫下記錄並獲得專屬折價券！</p>
+            <a href="index.html" class="inline-block mt-2 px-6 py-2.5 bg-coral-600 hover:bg-coral-700 text-white text-xs font-bold rounded-xl transition shadow-md">
+                查看更多行程 (前往首頁)
+            </a>
+        </div>
+
+        <!-- 已參與/購買行程卡片清單 (從最早開始到最晚排序) -->
+        <section id="section-activities" class="space-y-4">
+            <div class="flex items-center justify-between border-b-2 border-coral-300 pb-2">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-plane-circle-check text-coral-600 text-xl"></i>
+                    <h2 class="text-xl font-bold text-dark">行程足跡歷史 (時間先後排序)</h2>
+                </div>
+                <span class="text-xs text-teal-600 font-medium">💡 心得超過 30 字即贈 88 折優惠券！評價 4 星以上自動登上首頁！</span>
+            </div>
+            <div id="grid-completed-activities" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </section>
+
+    </main>
+
+    <!-- 💡 查看過去評價歷史 Modal (精確顯示填寫內容) -->
+    <div id="view-review-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[10001] flex items-center justify-center p-4" style="display: none;">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative space-y-5">
+            <button type="button" onclick="closeViewReviewModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 text-xl font-bold cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div class="border-b border-stone-100 pb-3">
+                <span class="bg-coral-50 text-coral-600 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Historical Review Record</span>
+                <h3 id="modal-review-title" class="text-lg font-bold text-gray-800 mt-1">行程名稱</h3>
+            </div>
+
+            <div class="space-y-4">
+                <!-- 評分與日期 -->
+                <div class="flex items-center justify-between bg-stone-50 p-3.5 rounded-2xl border border-stone-100">
+                    <div>
+                        <span class="text-xs text-stone-400 block mb-0.5">我的給分</span>
+                        <div id="modal-review-stars" class="text-amber-400 text-sm"></div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-stone-400 block mb-0.5">實際出發 (飛行) 日期</span>
+                        <span id="modal-review-date" class="text-xs font-bold text-stone-700"></span>
+                    </div>
+                </div>
+
+                <!-- 滿意度文字評價 -->
+                <div class="space-y-1.5">
+                    <label class="block text-xs font-bold text-stone-500">歷史評價與心得</label>
+                    <div class="p-4 bg-stone-50 rounded-2xl border border-stone-100 text-xs text-stone-700 leading-relaxed italic" id="modal-review-comment"></div>
+                </div>
+
+                <!-- 上傳照片 (有上傳自訂照片優先顯示自訂照片，無照片才顯示預設圖) -->
+                <div id="modal-review-photo-wrapper" class="space-y-1.5 hidden">
+                    <label class="block text-xs font-bold text-stone-500">評價分享照片</label>
+                    <div class="rounded-2xl overflow-hidden border border-stone-200 shadow-sm max-h-60">
+                        <img id="modal-review-photo" class="w-full h-full object-cover" alt="Travel Photo">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-2 border-t border-stone-100 flex justify-end">
+                <button type="button" onclick="closeViewReviewModal()" class="px-5 py-2 bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs font-bold rounded-xl transition cursor-pointer">
+                    關閉視窗
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-200/70 border-t border-stone-300/60 mt-12 py-10">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-500">
+            © 2026 Wanderlust Travel Agency. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- 頁面邏輯 -->
+    <script src="auth.js"></script>
+    <script>
+        // 全域暫存目前排序後的活動陣列
+        let currentJournalActivities = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderJournalPage();
+        });
+
+        function renderJournalPage() {
+            const currentUser = localStorage.getItem('currentUser');
+            const notLoggedIn = document.getElementById('not-logged-in-journal');
+            const emptyBox = document.getElementById('journal-empty');
+            const sectionActivities = document.getElementById('section-activities');
+            const grid = document.getElementById('grid-completed-activities');
+
+            if (!currentUser) {
+                if (notLoggedIn) notLoggedIn.classList.remove('hidden');
+                if (emptyBox) emptyBox.classList.add('hidden');
+                if (sectionActivities) sectionActivities.style.display = 'none';
+                document.getElementById('journal-count-display').textContent = '共 0 篇旅行足跡';
+                return;
+            }
+
+            if (notLoggedIn) notLoggedIn.classList.add('hidden');
+
+            const key = `completed_activities_${currentUser}`;
+            let activities = JSON.parse(localStorage.getItem(key) || '[]');
+
+            document.getElementById('journal-count-display').textContent = `共 ${activities.length} 筆旅程紀錄`;
+
+            if (activities.length === 0) {
+                if (emptyBox) emptyBox.classList.remove('hidden');
+                if (sectionActivities) sectionActivities.style.display = 'none';
+                return;
+            }
+
+            if (emptyBox) emptyBox.classList.add('hidden');
+            if (sectionActivities) sectionActivities.style.display = 'block';
+
+            // 💡 時間先後自動排序 (從最早到最晚)
+            activities.sort((a, b) => new Date(a.date) - new Date(b.date));
+            currentJournalActivities = activities; // 更新全域暫存
+
+            grid.innerHTML = '';
+
+            activities.forEach((act, index) => {
+                const reviewBadge = act.reviewed
+                    ? `<button onclick="openViewReviewModal(${index})" class="px-3.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 text-xs font-bold rounded-xl border border-emerald-200 transition shadow-sm cursor-pointer flex items-center gap-1.5">
+                        <i class="fa-solid fa-eye"></i>查看評價彈窗
+                       </button>`
+                    : `<button onclick="openReviewModalById('${act.id}', ${index})" class="px-4 py-2 bg-coral-600 hover:bg-coral-700 text-white text-xs font-bold rounded-xl transition shadow cursor-pointer flex items-center gap-1.5">
+                        <i class="fa-solid fa-pen-to-square"></i>給予評價
+                       </button>`;
+
+                const displayComment = act.reviewComment || act.comment;
+                const previewComment = act.reviewed && displayComment
+                    ? `<p class="text-xs text-stone-500 line-clamp-1 italic mt-1">「${displayComment}」</p>`
+                    : '';
+
+                grid.innerHTML += `
+                    <div class="bg-white/90 rounded-2xl p-5 border border-stone-200/70 soft-shadow space-y-3 flex flex-col justify-between hover:border-coral-300 transition group cursor-pointer" onclick="handleCardClick(event, ${index}, ${act.reviewed}, '${act.id}')">
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-4">
+                                <img src="${act.img}" class="w-24 h-20 object-cover rounded-xl bg-stone-200 flex-shrink-0" alt="${act.title}">
+                                <div class="space-y-1 flex-1">
+                                    <span class="bg-teal-50 text-teal-600 text-[10px] font-bold px-2.5 py-0.5 rounded-full">已預訂 / 參與</span>
+                                    <h3 class="text-sm font-bold text-gray-800 line-clamp-1 group-hover:text-coral-600 transition">${act.title}</h3>
+                                    <p class="text-xs text-stone-400"><i class="fa-regular fa-calendar mr-1"></i>出發日期：${act.date}</p>
+                                    ${previewComment}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-stone-100 flex justify-between items-center">
+                            <span class="text-xs font-bold text-coral-600">${act.price}</span>
+                            <div>${reviewBadge}</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // 開啟寫評價 modal 並綁定正確之卡片 ID
+        function openReviewModalById(actId, sortedIndex) {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) return;
+
+            const key = `completed_activities_${currentUser}`;
+            let rawActivities = JSON.parse(localStorage.getItem(key) || '[]');
+            
+            // 在原始陣列中找到真正的 index
+            const rawIndex = rawActivities.findIndex(a => a.id === actId);
+            if (rawIndex !== -1 && typeof openReviewModal === 'function') {
+                openReviewModal(rawIndex);
+            } else if (typeof openReviewModal === 'function') {
+                openReviewModal(sortedIndex);
+            }
+        }
+
+        function handleCardClick(event, index, isReviewed, actId) {
+            if (event.target.closest('button')) return;
+            if (isReviewed) {
+                openViewReviewModal(index);
+            } else {
+                openReviewModalById(actId, index);
+            }
+        }
+
+        // 💡 開啟歷史評價 Modal (精準獲取使用者寫入的評分、心得、照片與日期)
+        function openViewReviewModal(sortedIndex) {
+            const act = currentJournalActivities[sortedIndex];
+            if (!act) return;
+
+            document.getElementById('modal-review-title').textContent = act.title;
+            
+            // 讀取評分 (若沒評分預設 5)
+            const rating = act.reviewRating || act.rating || 5;
+            document.getElementById('modal-review-stars').innerHTML = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+            
+            // 讀取日期
+            document.getElementById('modal-review-date').textContent = act.reviewDate || act.date;
+            
+            // 💡 精準讀取使用者親自填寫的心得內容
+            const actualComment = act.reviewComment || act.comment;
+            if (actualComment && actualComment.trim() !== '') {
+                document.getElementById('modal-review-comment').textContent = `「${actualComment}」`;
+            } else {
+                document.getElementById('modal-review-comment').textContent = `「未填寫詳細心得」`;
+            }
+
+            // 💡 圖片邏輯：優先讀取使用者上傳的照片 (reviewPhoto / photo / Base64)，如果沒有上傳照片才顯示原本的行程封面圖
+            const photoWrapper = document.getElementById('modal-review-photo-wrapper');
+            const photoImg = document.getElementById('modal-review-photo');
+            const userUploadedPhoto = act.reviewPhoto || act.photo;
+
+            if (userUploadedPhoto) {
+                photoImg.src = userUploadedPhoto;
+                photoWrapper.classList.remove('hidden');
+            } else if (act.img) {
+                photoImg.src = act.img;
+                photoWrapper.classList.remove('hidden');
+            } else {
+                photoWrapper.classList.add('hidden');
+            }
+
+            document.getElementById('view-review-modal').style.display = 'flex';
+        }
+
+        function closeViewReviewModal() {
+            document.getElementById('view-review-modal').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>

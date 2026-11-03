@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust Travel - 全站行程搜尋</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coral: { 50: '#F7ECEB', 100: '#E8CECD', 300: '#E2A99B', 600: '#B55353', 700: '#9A4141' },
+                        teal: { 50: '#F3F7F8', 100: '#D8E4E7', 200: '#C2DCDE', 600: '#588B97', 700: '#436B75' },
+                        dark: '#2C3E50',
+                    },
+                    fontFamily: { sans: ['Inter', 'Noto Sans TC', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-[#FAF8F5] text-dark flex flex-col min-h-screen">
+
+    <!-- HEADER (由 auth.js 動態渲染) -->
+    <div id="header-container"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12 flex-grow">
+        
+        <!-- 搜尋狀態標題 -->
+        <div class="border-b border-stone-200 pb-4 flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-dark flex items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass text-coral-600"></i> 全站行程搜尋結果
+                </h1>
+                <p class="text-xs text-gray-500 mt-1">搜尋關鍵字：「<span id="search-keyword-display" class="font-bold text-coral-600">--</span>」</p>
+            </div>
+            <div id="search-count-display" class="text-xs font-semibold text-gray-600 bg-white px-3 py-1.5 rounded-full border border-stone-200 shadow-sm">
+                共找到 0 筆相關行程
+            </div>
+        </div>
+
+        <!-- 無結果提示區塊 -->
+        <div id="no-results" class="hidden bg-white p-12 rounded-2xl text-center shadow-sm border border-stone-200 space-y-3">
+            <i class="fa-solid fa-face-frown text-4xl text-stone-300"></i>
+            <h3 class="text-lg font-bold text-gray-700">找不到符合條件的旅遊行程</h3>
+            <p class="text-xs text-gray-400">請嘗試輸入其他關鍵字（例如：日本、韓國、自由行、法國、極光等）</p>
+        </div>
+
+        <!-- 分類區塊 1：主題團旅 -->
+        <section id="section-theme" class="search-section space-y-4">
+            <div class="flex items-center space-x-2 border-b-2 border-coral-300 pb-2">
+                <i class="fa-solid fa-compass text-coral-600 text-xl"></i>
+                <h2 class="text-xl font-bold text-dark">主題團旅</h2>
+            </div>
+            <div id="grid-theme" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        </section>
+
+        <!-- 分類區塊 2：自由行推薦 -->
+        <section id="section-free" class="search-section space-y-4">
+            <div class="flex items-center space-x-2 border-b-2 border-teal-300 pb-2">
+                <i class="fa-solid fa-plane text-teal-600 text-xl"></i>
+                <h2 class="text-xl font-bold text-dark">自由行機加酒</h2>
+            </div>
+            <div id="grid-free" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        </section>
+
+        <!-- 分類區塊 3：客製小團案例 -->
+        <section id="section-custom" class="search-section space-y-4">
+            <div class="flex items-center space-x-2 border-b-2 border-stone-400 pb-2">
+                <i class="fa-solid fa-users text-stone-600 text-xl"></i>
+                <h2 class="text-xl font-bold text-dark">精選客製小團案例</h2>
+            </div>
+            <div id="grid-custom" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-200/70 border-t border-stone-300/60 mt-12 py-10">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-500">
+            © 2026 Wanderlust Travel Agency. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- ==================== MODAL 區域 ==================== -->
+
+    <!-- 1. 主題團旅/共通詳細 Modal -->
+    <div id="tour-detail-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl relative my-auto">
+            <button onclick="closeTourModal()" class="absolute top-4 right-4 z-20 bg-white/80 hover:bg-white text-gray-700 w-10 h-10 rounded-full flex items-center justify-center shadow-lg backdrop-blur-md transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="relative h-60 w-full bg-stone-900 flex-shrink-0">
+                <img id="detail-modal-img" src="" class="w-full h-full object-cover opacity-90" alt="Tour Cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-4 left-6 right-6 text-white space-y-1">
+                    <span id="detail-modal-tag" class="bg-coral-600 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">標籤</span>
+                    <h2 id="detail-modal-title" class="text-xl sm:text-2xl font-bold text-white">行程名稱</h2>
+                </div>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-4 flex-grow text-sm text-stone-600">
+                <div class="flex items-center justify-between border-b pb-3">
+                    <span class="font-bold text-coral-600 text-2xl" id="detail-modal-price">TWD 0</span>
+                    <span class="text-xs text-gray-400"><i class="fa-solid fa-plane-departure mr-1"></i>成團保證 · 包含稅金</span>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-800 mb-1"><i class="fa-solid fa-star text-coral-500 mr-1"></i>行程亮點說明</h4>
+                    <p id="detail-modal-desc" class="text-xs leading-relaxed text-gray-600">詳細行程規劃內容。</p>
+                </div>
+            </div>
+            <div class="bg-stone-100 border-t border-stone-200 p-4 px-6 flex justify-end gap-3 flex-shrink-0">
+                <button onclick="closeTourModal()" class="px-5 py-2.5 rounded-xl border border-stone-300 text-stone-600 text-xs font-bold hover:bg-stone-200 transition">關閉</button>
+                <button onclick="confirmBookingFromDetail()" class="px-6 py-2.5 bg-coral-600 hover:bg-coral-700 text-white text-xs font-bold rounded-xl transition shadow-md">立即預訂行程</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 自由行客製試算 Modal -->
+    <div id="free-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl relative my-auto">
+            <button onclick="closeFreeModal()" class="absolute top-4 right-4 z-20 bg-white/80 hover:bg-white text-gray-700 w-10 h-10 rounded-full flex items-center justify-center shadow-lg backdrop-blur-md transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="relative h-56 w-full bg-stone-900 flex-shrink-0">
+                <img id="free-modal-img" src="" class="w-full h-full object-cover opacity-85" alt="Package Cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-4 left-6 right-6 text-white space-y-1">
+                    <span id="free-modal-city" class="bg-coral-600 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">自由行機加酒</span>
+                    <h2 id="free-modal-title" class="text-xl font-bold tracking-tight text-white">方案標題</h2>
+                    <p id="free-modal-hotel-name" class="text-xs text-stone-200"><i class="fa-solid fa-hotel mr-1"></i>搭配住宿：嚴選地標飯店</p>
+                </div>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-6 flex-grow">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-700 uppercase tracking-wider block"><i class="fa-solid fa-plane-departure text-coral-600 mr-1"></i>選擇來回航班時段</label>
+                    <div id="free-flight-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-700 uppercase tracking-wider block"><i class="fa-solid fa-bed text-coral-600 mr-1"></i>飯店房型升級方案</label>
+                    <div id="free-room-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-700 uppercase tracking-wider block"><i class="fa-solid fa-cubes text-coral-600 mr-1"></i>自由加購行程與服務</label>
+                    <div id="free-addon-options" class="space-y-2 bg-stone-50 p-4 rounded-2xl border border-stone-200/80"></div>
+                </div>
+                <div class="flex items-center justify-between pt-2 border-t border-stone-200">
+                    <span class="text-sm font-bold text-gray-700">同行旅客人數</span>
+                    <div class="flex items-center space-x-3 bg-stone-100 rounded-xl px-3 py-1.5">
+                        <button onclick="changeFreePassengers(-1)" class="w-7 h-7 rounded-lg bg-white shadow-sm hover:bg-stone-200 text-stone-700 font-bold flex items-center justify-center transition">-</button>
+                        <span id="free-passenger-count" class="font-bold text-gray-800 text-base w-6 text-center">2</span>
+                        <button onclick="changeFreePassengers(1)" class="w-7 h-7 rounded-lg bg-white shadow-sm hover:bg-stone-200 text-stone-700 font-bold flex items-center justify-center transition">+</button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-stone-100 border-t border-stone-200 p-4 px-6 flex items-center justify-between flex-shrink-0">
+                <div>
+                    <span class="text-xs text-gray-500 block">客製方案預算總計</span>
+                    <span id="free-total-price" class="text-2xl font-bold text-coral-600">TWD 0</span>
+                </div>
+                <button onclick="confirmFreeBooking()" class="bg-coral-600 hover:bg-coral-700 text-white text-xs font-bold py-3 px-6 rounded-xl transition shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-cart-shopping"></i> 確認方案並預訂
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 客製團旅預約 Modal -->
+    <div id="booking-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative space-y-5">
+            <button onclick="closeBookingModal()" class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 text-xl font-bold">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div>
+                <h3 class="text-xl font-bold text-gray-800">預約行程諮詢</h3>
+                <p id="modal-tour-title" class="text-xs font-semibold text-coral-600 mt-1">行程名稱 (預估價 NT$ 0)</p>
+            </div>
+            <form onsubmit="handleBookingSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">您的姓名</label>
+                    <input type="text" required placeholder="例如: 王小明" class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-coral-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">聯絡電話</label>
+                    <input type="tel" required placeholder="例如: 0912345678" class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-coral-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">預計出發月份</label>
+                    <select class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-coral-600">
+                        <option>2026年 5月 (春季熱門)</option>
+                        <option>2026年 6月 (暑期早鳥)</option>
+                        <option>2026年 7月 (夏日祭典)</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full py-3 bg-coral-600 hover:bg-coral-700 text-white font-bold rounded-xl transition shadow-md mt-2 text-sm">
+                    送出預約需求
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 成功 Toast -->
+    <div id="success-toast" class="fixed bottom-6 right-6 z-50 bg-dark text-white px-5 py-3.5 rounded-2xl shadow-2xl hidden flex items-center gap-3 border border-gray-700 transition-all duration-300">
+        <div class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center text-sm font-bold"><i class="fa-solid fa-check"></i></div>
+        <div>
+            <div class="font-bold text-sm">預約送出成功</div>
+            <div class="text-xs text-gray-300">專人將於 24 小時內與您聯繫</div>
+        </div>
+    </div>
+
+    <!-- 全站資料庫與過濾與 Modal 互動邏輯 -->
+    <script src="auth.js"></script>
+    <script>
+        // 跨頁面資料整合庫（附帶完整詳細說明）
+        const allToursDatabase = [
+            // --- 主題團旅 ---
+            { id: 'theme-1', category: 'theme', title: '東京目黑川櫻花祭雙飛5日', topic: 'topic: 櫻花盛宴', keywords: '日本 東京 目黑川 櫻花 亞洲 關東', price: 'TWD 36,800', tag: '#賞櫻秘境', img: 'https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=500&q=80', desc: '走訪東京最受歡迎的賞櫻名所，包含目黑川櫻花隧道、新宿御苑，特別安排千鳥之淵夜櫻遊船。' },
+            { id: 'theme-2', category: 'theme', title: '飛驒高山白川鄉點燈銀白5日', topic: 'topic: 童話合掌村', keywords: '日本 飛驒 高山 白川鄉 合掌村 點燈 雪景 亞洲 中部', price: 'TWD 42,000', tag: '#秘境點燈', img: 'https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&w=500&q=80', desc: '走進夢幻童話村！入住高山溫泉飯店，享用飛驒牛料理，獨家安排白川鄉冬季點燈專用通行證。' },
+            { id: 'theme-3', category: 'theme', title: '小樽運河破冰船破雪賞景5日', topic: 'topic: 北海道雪紛飛', keywords: '日本 北海道 小樽 破冰船 帝王蟹 札幌 亞洲', price: 'TWD 48,900', tag: '#破冰船體驗', img: 'https://images.unsplash.com/photo-1548777123-e216912df7d8?auto=format&fit=crop&w=500&q=80', desc: '體驗搭乘網走破冰船衝破流冰的極致震撼，享受小樽運河夜景與北海道帝王蟹吃到飽盛宴。' },
+            { id: 'theme-4', category: 'theme', title: '京都奈良神社千年歷史探尋5日', topic: 'topic: 古都建築', keywords: '日本 京都 奈良 神社 和服 清水寺 千本鳥居 古都 亞洲', price: 'TWD 34,000', tag: '#和服體驗', img: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=500&q=80', desc: '換上日式和服漫步於古都千本鳥居，探訪世界文化遺產清水寺，並在奈良公園與可愛小鹿親密接觸。' },
+            { id: 'theme-5', category: 'theme', title: '南法普羅旺斯紫色花田8日', topic: 'topic: 薰衣草花海', keywords: '法國 南法 普羅旺斯 薰衣草 歐洲 莊園', price: 'TWD 72,000', tag: '#莊園住宿', img: 'https://images.unsplash.com/photo-1499002238440-d264edd596ec?auto=format&fit=crop&w=500&q=80', desc: '徜徉在普羅旺斯無限延伸的薰衣草田，入住法式奢華莊園，品嚐在地名莊葡萄酒與米其林饗宴。' },
+
+            // --- 自由行 ---
+            { id: 'free-1', category: 'free', title: '新宿五星飯店 5 日自由行', topic: '東京機+酒', keywords: '日本 東京 新宿 五星飯店 機加酒 自由行 地鐵 亞洲', price: 'TWD 22,500', tag: '#含早餐', img: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=600&q=80', city: '東京' },
+            { id: 'free-4', category: 'free', title: '京都町家古民家 5 日自由行', topic: '京都古都漫遊', keywords: '日本 京都 古都 漫遊 町家 和服 楓葉 溫泉 亞洲', price: 'TWD 24,800', tag: '#傳統町家', img: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=600&q=80', city: '京都' },
+            { id: 'free-5', category: 'free', title: '札幌美瑛溫泉 6 日自駕遊', topic: '北海道自駕遊', keywords: '日本 北海道 札幌 美瑛 溫泉 自駕 雪景 亞洲', price: 'TWD 33,500', tag: '#含租車', img: 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=600&q=80', city: '北海道' },
+            { id: 'free-13', category: 'free', title: '恩納村海景渡假村 4 日自駕自由行', topic: '沖繩自駕海灘', keywords: '日本 沖繩 海灘 自駕 海景 渡假 亞洲 自由行', price: 'TWD 18,500', tag: '#包含租車', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80', city: '沖繩' },
+
+            // --- 客製小團 ---
+            { id: 'custom-1', category: 'custom', title: '夏威夷海島奢華渡假 7 日', topic: 'topic: 科技公司獎勵旅遊', keywords: '夏威夷 美國 獎勵旅遊 海島 渡假 包機', price: 'NT$ 85,000起', tag: '#專屬包機', img: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=500&q=80' },
+            { id: 'custom-2', category: 'custom', title: '日本東北秘境櫻花與銀山溫泉浪漫行', topic: 'topic: 三代同堂家庭聚會', keywords: '日本 東北 櫻花 銀山溫泉 溫泉 家族包團 專屬導遊 亞洲', price: 'NT$ 78,800起', tag: '#無障礙行程', img: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=500&q=80' }
+        ];
+
+        // 頁面搜尋與動態渲染
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = (urlParams.get('query') || '').trim().toLowerCase();
+
+            document.getElementById('search-keyword-display').textContent = query || '全部行程';
+            const searchTerms = query.split(/\s+/).filter(t => t.length > 0);
+
+            const gridTheme = document.getElementById('grid-theme');
+            const gridFree = document.getElementById('grid-free');
+            const gridCustom = document.getElementById('grid-custom');
+
+            let counts = { theme: 0, free: 0, custom: 0 };
+
+            allToursDatabase.forEach(item => {
+                const searchableText = `${item.title} ${item.topic} ${item.keywords} ${item.tag}`.toLowerCase();
+                const isMatched = searchTerms.length === 0 || searchTerms.every(term => searchableText.includes(term));
+
+                if (isMatched) {
+                    counts[item.category]++;
+
+                    // 依據卡片類型綁定對應的 Modal 事件
+                    let clickAction = '';
+                    let actionBtnHTML = '';
+
+                    if (item.category === 'theme') {
+                        clickAction = `openTourModal('${item.id}')`;
+                        actionBtnHTML = `<span class="text-xs text-coral-600 font-medium">查看行程詳情</span>`;
+                    } else if (item.category === 'free') {
+                        clickAction = `openFreeModal('${item.id}')`;
+                        actionBtnHTML = `<span class="text-xs text-coral-600 font-medium"><i class="fa-solid fa-sliders mr-1"></i>客製試算</span>`;
+                    } else if (item.category === 'custom') {
+                        clickAction = `openBookingModal('${item.title}', '${item.price}')`;
+                        actionBtnHTML = `<button onclick="event.stopPropagation(); openBookingModal('${item.title}', '${item.price}')" class="px-4 py-1.5 bg-coral-600 text-white font-medium text-xs rounded-lg shadow">立即預約</button>`;
+                    }
+
+                    const cardHTML = `
+                        <div onclick="${clickAction}" class="bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group">
+                            <div class="h-48 bg-stone-200 overflow-hidden relative">
+                                <img src="${item.img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="${item.title}">
+                                <span class="absolute top-3 left-3 bg-coral-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">${item.tag}</span>
+                            </div>
+                            <div class="p-4 space-y-2">
+                                <div class="text-xs font-semibold text-coral-600">${item.topic}</div>
+                                <h3 class="text-sm font-bold text-gray-800 group-hover:text-coral-600 transition">${item.title}</h3>
+                                <div class="flex items-center justify-between pt-2 border-t border-stone-100">
+                                    ${actionBtnHTML}
+                                    <div class="text-right text-coral-600 font-bold text-xl">${item.price}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    if (item.category === 'theme') gridTheme.innerHTML += cardHTML;
+                    if (item.category === 'free') gridFree.innerHTML += cardHTML;
+                    if (item.category === 'custom') gridCustom.innerHTML += cardHTML;
+                }
+            });
+
+            document.getElementById('section-theme').style.display = counts.theme > 0 ? 'block' : 'none';
+            document.getElementById('section-free').style.display = counts.free > 0 ? 'block' : 'none';
+            document.getElementById('section-custom').style.display = counts.custom > 0 ? 'block' : 'none';
+
+            const totalCount = counts.theme + counts.free + counts.custom;
+            document.getElementById('search-count-display').textContent = `共找到 ${totalCount} 筆相關行程`;
+
+            if (totalCount === 0) {
+                document.getElementById('no-results').classList.remove('hidden');
+            }
+        });
+
+        // ==================== 1. 主題團旅 Modal 邏輯 ====================
+        let activeTour = null;
+        function openTourModal(tourId) {
+            activeTour = allToursDatabase.find(t => t.id === tourId);
+            if (!activeTour) return;
+
+            document.getElementById('detail-modal-img').src = activeTour.img;
+            document.getElementById('detail-modal-tag').textContent = activeTour.tag;
+            document.getElementById('detail-modal-title').textContent = activeTour.title;
+            document.getElementById('detail-modal-price').textContent = activeTour.price;
+            document.getElementById('detail-modal-desc').textContent = activeTour.desc || '精彩獨家行程，享受頂級在地體驗！';
+
+            document.getElementById('tour-detail-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTourModal() {
+            document.getElementById('tour-detail-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function confirmBookingFromDetail() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                alert("請先登入會員，方可進行行程預訂！");
+                if (typeof openAuthModal === 'function') openAuthModal('login');
+                return;
+            }
+            alert(`已成功為您送出【${activeTour.title}】預訂需求！專人將於 24 小時內聯絡您。`);
+            closeTourModal();
+        }
+
+        // ==================== 2. 自由行試算 Modal 邏輯 ====================
+        let currentFreeTour = null;
+        let freePassengers = 2;
+        let selectedFlight = 0;
+        let selectedRoom = 0;
+        let selectedAddons = new Set();
+
+        function openFreeModal(id) {
+            const tour = allToursDatabase.find(t => t.id === id);
+            if (!tour) return;
+
+            currentFreeTour = {
+                title: tour.title,
+                city: tour.city || '熱門城市',
+                price: parseInt(tour.price.replace(/[^0-9]/g, ''), 10) || 25000,
+                img: tour.img,
+                hotel: '在地頂級星級飯店',
+                flights: [{ name: '傳統航空來回', diff: 0 }, { name: '廉價航空精省', diff: -2000 }],
+                rooms: [{ name: '標準雙人客房', diff: 0 }, { name: '地標景觀房', diff: 3000 }],
+                addons: [{ id: 'a1', name: '全境高速 eSIM 網卡', price: 450 }, { id: 'a2', name: '機場專車來回接送', price: 1200 }]
+            };
+
+            selectedFlight = 0; selectedRoom = 0; selectedAddons.clear();
+
+            document.getElementById('free-modal-img').src = currentFreeTour.img;
+            document.getElementById('free-modal-city').textContent = currentFreeTour.city;
+            document.getElementById('free-modal-title').textContent = currentFreeTour.title;
+
+            document.getElementById('free-flight-options').innerHTML = currentFreeTour.flights.map((f, i) => `
+                <label onclick="selectFlight(${i})" class="flex items-center justify-between p-3 rounded-xl border border-stone-200 bg-white cursor-pointer hover:border-coral-300">
+                    <div class="flex items-center gap-2">
+                        <input type="radio" name="flight" ${i === 0 ? 'checked' : ''} class="text-coral-600">
+                        <span class="text-xs font-semibold text-gray-800">${f.name}</span>
+                    </div>
+                    <span class="text-xs text-coral-600 font-bold">${f.diff >= 0 ? '+' : ''}${f.diff.toLocaleString()}</span>
+                </label>
+            `).join('');
+
+            document.getElementById('free-room-options').innerHTML = currentFreeTour.rooms.map((r, i) => `
+                <label onclick="selectRoom(${i})" class="flex items-center justify-between p-3 rounded-xl border border-stone-200 bg-white cursor-pointer hover:border-coral-300">
+                    <div class="flex items-center gap-2">
+                        <input type="radio" name="room" ${i === 0 ? 'checked' : ''} class="text-coral-600">
+                        <span class="text-xs font-semibold text-gray-800">${r.name}</span>
+                    </div>
+                    <span class="text-xs text-coral-600 font-bold">${r.diff >= 0 ? '+' : ''}${r.diff.toLocaleString()}</span>
+                </label>
+            `).join('');
+
+            document.getElementById('free-addon-options').innerHTML = currentFreeTour.addons.map(a => `
+                <label onclick="toggleAddon('${a.id}')" class="flex items-center justify-between p-2.5 rounded-lg bg-white border border-stone-200 cursor-pointer hover:border-coral-300">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" class="rounded text-coral-600">
+                        <span class="text-xs font-medium text-gray-700">${a.name}</span>
+                    </div>
+                    <span class="text-xs font-bold text-gray-800">+TWD ${a.price.toLocaleString()}</span>
+                </label>
+            `).join('');
+
+            updateFreePrice();
+            document.getElementById('free-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFreeModal() {
+            document.getElementById('free-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function selectFlight(i) { selectedFlight = i; updateFreePrice(); }
+        function selectRoom(i) { selectedRoom = i; updateFreePrice(); }
+        function toggleAddon(id) {
+            if (selectedAddons.has(id)) selectedAddons.delete(id);
+            else selectedAddons.add(id);
+            updateFreePrice();
+        }
+
+        function changeFreePassengers(delta) {
+            if (freePassengers + delta >= 1 && freePassengers + delta <= 8) {
+                freePassengers += delta;
+                document.getElementById('free-passenger-count').textContent = freePassengers;
+                updateFreePrice();
+            }
+        }
+
+        function updateFreePrice() {
+            if (!currentFreeTour) return;
+            let base = currentFreeTour.price + currentFreeTour.flights[selectedFlight].diff + currentFreeTour.rooms[selectedRoom].diff;
+            let addonTotal = 0;
+            currentFreeTour.addons.forEach(a => { if (selectedAddons.has(a.id)) addonTotal += a.price; });
+            const total = (base * freePassengers) + addonTotal;
+            document.getElementById('free-total-price').textContent = `TWD ${total.toLocaleString()}`;
+        }
+
+        function confirmFreeBooking() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                alert("請先登入會員，方可完成自由行預訂！");
+                if (typeof openAuthModal === 'function') openAuthModal('login');
+                return;
+            }
+            alert(`預訂成功！總額：${document.getElementById('free-total-price').textContent}`);
+            closeFreeModal();
+        }
+
+        // ==================== 3. 客製小團 Modal 邏輯 ====================
+        function openBookingModal(tourTitle, price) {
+            document.getElementById('modal-tour-title').innerText = `${tourTitle} (預估價 ${price})`;
+            document.getElementById('booking-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeBookingModal() {
+            document.getElementById('booking-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function handleBookingSubmit(event) {
+            event.preventDefault();
+            closeBookingModal();
+            const toast = document.getElementById('success-toast');
+            toast.classList.remove('hidden');
+            setTimeout(() => { toast.classList.add('hidden'); }, 3500);
+        }
+    </script>
+</body>
+
+</html>

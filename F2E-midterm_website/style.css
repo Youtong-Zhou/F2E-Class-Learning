@@ -1,0 +1,232 @@
+
+/* ==========================================================================
+   Wanderlust Travel - 雜誌風極致美化升級版 Style System
+   ========================================================================== */
+
+/* ===== 1. 全域顏色變數與質感設定 ===== */
+:root {
+  /* 品牌色系 */
+  --coral-50: #F7ECEB;
+  --coral-100: #E8CECD;
+  --coral-300: #E2A99B;
+  --coral-600: #B55353;
+  --coral-700: #9A4141;
+
+  --teal-50: #F3F7F8;
+  --teal-100: #D8E4E7;
+  --teal-200: #C2DCDE;
+  --teal-600: #588B97;
+  --teal-700: #436B75;
+
+  /* 去 AI 樣板感的核心：溫暖燕麥暖白底色 (取代冰冷死板的 #f9fafb) */
+  --bg-warm: #FAF8F5;
+  --bg-warm-secondary: #F4F0EA;
+
+  --dark: #2C3E50;
+  --slate-700: #334155;
+  --stone-400: #A8A29E;
+  --stone-500: #78716C;
+}
+
+/* ===== 2. 全域基礎樣式與抗鋸齒 ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  padding-top: 140px; /* 確保固定 Header 不遮擋內容 */
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  background-color: var(--bg-warm) !important; /* 強制覆蓋 Tailwind bg-gray-50 */
+  color: var(--dark);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: flex-col;
+  -webkit-font-smoothing: antialiased; /* 字體抗鋸齒優化 */
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+main {
+  flex-grow: 1;
+}
+
+/* 全域文字選取高亮 (品牌珊瑚紅) */
+::selection {
+  background-color: var(--coral-100);
+  color: var(--coral-700);
+}
+
+/* 自訂滑順質感捲軸 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-warm-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: #D6CEC5;
+  border-radius: 99px;
+  border: 2px solid var(--bg-warm-secondary);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--coral-300);
+}
+
+/* 確保固定導覽列錨點保留 140px 安全距離 */
+[id] {
+  scroll-margin-top: 140px;
+}
+
+/* ===== 3. 高級卡片質感與陰影系統 ===== */
+
+/* 微光多層次柔和陰影 (代替原版硬邊框與粗暴黑陰影) */
+.soft-shadow,
+.card-item,
+.tour-card {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(230, 224, 217, 0.7);
+  box-shadow: 0 4px 20px -2px rgba(44, 62, 80, 0.03),
+              0 2px 6px -1px rgba(44, 62, 80, 0.02);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 懸浮狀態：優雅浮起 + 微光暖影 */
+.soft-shadow:hover,
+.card-item:hover,
+.tour-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(226, 169, 155, 0.6); /* 珊瑚紅微光邊框 */
+  box-shadow: 0 20px 35px -10px rgba(181, 83, 83, 0.08),
+              0 8px 15px -6px rgba(44, 62, 80, 0.04);
+}
+
+/* 玻璃透光質感卡片 (適用於 Overlay 或側邊區塊) */
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.05);
+}
+
+/* ===== 4. 圖片鏡頭與懸浮微互動 ===== */
+
+/* 圖片容器鏡頭放大效果 */
+.img-zoom-container {
+  overflow: hidden;
+  position: relative;
+}
+
+.img-zoom-container img {
+  transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.card-item:hover img,
+.tour-card:hover img,
+.img-zoom-container:hover img {
+  transform: scale(1.06);
+}
+
+/* ===== 5. 右下角固定折價券容器 (Floating Coupons) ===== */
+.coupon-container {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 999;
+}
+
+.coupon-card,
+.ticket-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-left: 4px solid var(--coral-600);
+  border-top: 1px solid rgba(255, 255, 255, 0.8);
+  border-right: 1px solid rgba(230, 224, 217, 0.6);
+  border-bottom: 1px solid rgba(230, 224, 217, 0.6);
+  padding: 14px 18px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.coupon-card:hover,
+.ticket-card:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 15px 30px -5px rgba(181, 83, 83, 0.12);
+}
+
+/* 下拉選單滑順動畫 */
+.dropdown-menu {
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.25s;
+}
+
+/* ===== 6. 無縫跑馬燈動畫 ===== */
+@keyframes marquee-seamless {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee-seamless {
+  display: flex !important;
+  width: max-content !important;
+  white-space: nowrap !important;
+  animation: marquee-seamless 16s linear infinite !important;
+  will-change: transform;
+}
+
+.animate-marquee-seamless:hover {
+  animation-play-state: paused;
+}
+
+.marquee-item {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* 淡入淡出 keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ===== 7. 相容性 Tailwind 顏色輔助類別 ===== */
+.bg-coral-50 { background-color: var(--coral-50); }
+.bg-coral-600 { background-color: var(--coral-600); }
+.bg-coral-700 { background-color: var(--coral-700); }
+.text-coral-300 { color: var(--coral-300); }
+.text-coral-600 { color: var(--coral-600); }
+.border-coral-300 { border-color: var(--coral-300); }
+
+.bg-teal-50 { background-color: var(--teal-50); }
+.bg-teal-100 { background-color: var(--teal-100); }
+.bg-teal-600 { background-color: var(--teal-600); }
+.bg-teal-700 { background-color: var(--teal-700); }
+.text-teal-600 { color: var(--teal-600); }
+.text-teal-700 { color: var(--teal-700); }
+.border-teal-200 { border-color: var(--teal-200); }
+
+.text-dark { color: var(--dark); }

@@ -1,0 +1,1162 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust Travel - 自由行</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- 自訂 CSS 檔 -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        coral: {
+                            50: '#F7ECEB',
+                            100: '#E8CECD',
+                            300: '#E2A99B',
+                            600: '#B55353',
+                            700: '#9A4141',
+                        },
+                        teal: {
+                            50: '#F3F7F8',
+                            100: '#D8E4E7',
+                            200: '#C2DCDE',
+                            600: '#588B97',
+                            700: '#436B75',
+                        },
+                        dark: '#2C3E50',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-[#FAF8F5] text-dark flex flex-col min-h-screen">
+
+    <!-- HEADER (透過 auth.js 渲染固定 Header) -->
+    <div id="header-container"></div>
+
+    <!-- CONTENT: 自由行內容 -->
+    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-10 flex-grow">
+        <!-- 原有指定條件搜尋表單區 (保留不修改) -->
+        <div class="bg-white/90 backdrop-blur-md p-6 sm:p-8 rounded-2xl border border-stone-200/70 soft-shadow">
+            <h2 class="text-xl font-bold text-dark mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-plane text-coral-600"></i> 自由行機加酒搜尋
+            </h2>
+
+            <form id="search-form" class="space-y-4" onsubmit="event.preventDefault(); filterTours();">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 relative">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 mb-1">From (出發地)</label>
+                        <input type="text" id="from-input" placeholder="例如：台北 (TPE)"
+                            class="w-full p-2.5 bg-stone-50 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-coral-600">
+                    </div>
+                    <div
+                        class="hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white border border-stone-300 rounded-full items-center justify-center text-xs text-gray-500 cursor-pointer hover:bg-coral-50 hover:text-coral-600">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 mb-1">To (目的地)</label>
+                        <input type="text" id="to-input" placeholder="例如：東京 (TYO)"
+                            class="w-full p-2.5 bg-stone-50 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-coral-600">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 mb-1">出發日</label>
+                        <input type="date" id="start-date"
+                            class="w-full p-2.5 bg-stone-50 rounded-lg border border-stone-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-coral-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 mb-1">回程日</label>
+                        <input type="date" id="end-date"
+                            class="w-full p-2.5 bg-stone-50 rounded-lg border border-stone-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-coral-600">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 mb-1">艙等</label>
+                        <select id="cabin-class"
+                            class="w-full p-2.5 bg-stone-50 rounded-lg border border-stone-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-coral-600">
+                            <option>經濟艙</option>
+                            <option>豪華經濟艙</option>
+                            <option>商務艙</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 mb-1">大人 (12歲以上)</label>
+                        <input type="number" id="adult-count" value="2" min="1"
+                            class="w-full p-2.5 bg-stone-50 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-coral-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 mb-1">孩童 (12歲以下)</label>
+                        <input type="number" id="child-count" value="0" min="0"
+                            class="w-full p-2.5 bg-stone-50 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-coral-600">
+                    </div>
+                </div>
+
+                <button type="button" id="search-submit-btn"
+                    class="w-full py-3 bg-coral-600 hover:bg-coral-700 text-white font-bold rounded-lg transition shadow-md mt-4 cursor-pointer">
+                    搜尋自由行方案
+                </button>
+            </form>
+        </div>
+
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-dark">熱門自由行推薦</h3>
+                <button type="button" onclick="resetSearch()"
+                    class="text-xs text-coral-600 hover:underline font-semibold cursor-pointer">顯示全部行程</button>
+            </div>
+
+            <!-- 搜尋無結果提示 -->
+            <div id="no-result"
+                class="hidden bg-white p-8 rounded-xl text-center text-gray-500 shadow-sm border border-stone-200 mb-6">
+                <i class="fa-solid fa-triangle-exclamation text-3xl text-coral-400 mb-2"></i>
+                <p class="font-bold text-gray-700">找不到符合條件的自由行方案</p>
+                <p class="text-xs text-gray-400 mt-1">請嘗試輸入其他目的地關鍵字（例如：日本、韓國、巴黎、雪梨等）</p>
+            </div>
+
+            <!-- 3x6 網格區域 (18 個互動卡片) -->
+            <div id="tourCardGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- 卡片 1: 東京 -->
+                <div onclick="openFreeModal('free-1')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="日本 東京 新宿 五星飯店 機加酒 自由行 地鐵 亞洲 櫻花 購物">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=600&q=80"
+                            alt="新宿五星飯店"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <span
+                            class="absolute top-3 left-3 bg-coral-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">熱門熱銷</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">東京機+酒</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">新宿五星飯店 5 日自由行</h4>
+                        <div class="flex gap-2">
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#含早餐</span>
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#地鐵站直達</span>
+                        </div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100">
+                            <span><i class="fa-regular fa-clock mr-1"></i>5 天 4 夜</span>
+                            <span><i class="fa-solid fa-location-dot mr-1"></i>東京</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 22,500</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 2: 巴里島 -->
+                <div onclick="openFreeModal('free-2')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="印尼 巴里島 烏布 Villa 獨棟 泳池 海島 接送 渡假 東南亞 蜜月">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&q=80"
+                            alt="烏布 Villa"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <span
+                            class="absolute top-3 left-3 bg-cyan-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">蜜月首選</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">巴里島 Villa</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">烏布獨棟泳池Villa 6 日自由行
+                        </h4>
+                        <div class="flex gap-2">
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#私人泳池</span>
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#含接送</span>
+                        </div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100">
+                            <span><i class="fa-regular fa-clock mr-1"></i>6 天 5 夜</span>
+                            <span><i class="fa-solid fa-location-dot mr-1"></i>巴厘島</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 31,800</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 3: 雪梨 -->
+                <div onclick="openFreeModal('free-3')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="澳洲 雪梨 歌劇院 海景 網卡 快閃 自由行 大洋洲 陽光">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=600&q=80"
+                            alt="雪梨歌劇院"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <span
+                            class="absolute top-3 left-3 bg-amber-600/90 text-white text-xs font-semibold px-2.5 py-1 rounded-full backdrop-blur-sm">海景房型</span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">雪梨快閃</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">雪梨歌劇院海景房 7 日自由行</h4>
+                        <div class="flex gap-2">
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#無敵海景</span>
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#贈網卡</span>
+                        </div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100">
+                            <span><i class="fa-regular fa-clock mr-1"></i>7 天 6 夜</span>
+                            <span><i class="fa-solid fa-location-dot mr-1"></i>雪梨</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 42,900</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 4: 京都 -->
+                <div onclick="openFreeModal('free-4')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="日本 京都 古都 漫遊 町家 和服 楓葉 溫泉 亞洲 神社">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=600&q=80"
+                            alt="京都町家"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">京都古都漫遊</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">京都町家古民家 5 日自由行</h4>
+                        <div class="flex gap-2">
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#和服體驗</span>
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#傳統町家</span>
+                        </div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100">
+                            <span><i class="fa-regular fa-clock mr-1"></i>5 天 4 夜</span>
+                            <span><i class="fa-solid fa-location-dot mr-1"></i>京都</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 24,800</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 5: 北海道 -->
+                <div onclick="openFreeModal('free-5')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="日本 北海道 札幌 美瑛 溫泉 自駕 雪景 一泊二食 滑雪 亞洲">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=600&q=80"
+                            alt="北海道自駕"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">北海道自駕遊</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">札幌美瑛溫泉 6 日自駕遊</h4>
+                        <div class="flex gap-2">
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#含租車</span>
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#一泊二食</span>
+                        </div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100">
+                            <span><i class="fa-regular fa-clock mr-1"></i>6 天 5 夜</span>
+                            <span><i class="fa-solid fa-location-dot mr-1"></i>北海道</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 33,500</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 6: 首爾 -->
+                <div onclick="openFreeModal('free-6')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="韓國 首爾 明洞 購物 韓風 美妝 交通卡 自由行 亞洲美食">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1538485399081-7191377e8241?auto=format&fit=crop&w=600&q=80"
+                            alt="首爾明洞"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">首爾潮流購物</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">明洞潮流設計旅店 4 日自由行</h4>
+                        <div class="flex gap-2">
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#商圈核心</span>
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#贈交通卡</span>
+                        </div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100">
+                            <span><i class="fa-regular fa-clock mr-1"></i>4 天 3 夜</span>
+                            <span><i class="fa-solid fa-location-dot mr-1"></i>首爾</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 16,900</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 7: 曼谷 -->
+                <div onclick="openFreeModal('free-7')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="泰國 曼谷 五星 高空酒吧 泳池 SPA 美食 夜市 渡假 東南亞 米其林">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=600&q=80"
+                            alt="曼谷高空酒吧"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">曼谷奢華渡假</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">高空酒吧五星奢旅 5 日自由行</h4>
+                        <div class="flex gap-2">
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#頂樓泳池</span>
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#含泰式SPA</span>
+                        </div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100">
+                            <span><i class="fa-regular fa-clock mr-1"></i>5 天 4 夜</span>
+                            <span><i class="fa-solid fa-location-dot mr-1"></i>曼谷</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 19,800</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 8: 巴黎 -->
+                <div onclick="openFreeModal('free-8')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="法國 巴黎 鐵塔 羅浮宮 浪漫 博物館 歐洲 景觀">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=600&q=80"
+                            alt="巴黎鐵塔"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">法式浪漫漫遊</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">鐵塔景觀精品飯店 8 日浪漫遊</h4>
+                        <div class="flex gap-2">
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#鐵塔房型</span>
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#羅浮宮門票</span>
+                        </div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100">
+                            <span><i class="fa-regular fa-clock mr-1"></i>8 天 7 夜</span>
+                            <span><i class="fa-solid fa-location-dot mr-1"></i>巴黎</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 58,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 9: 倫敦 -->
+                <div onclick="openFreeModal('free-9')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="英國 倫敦 大英博物館 英倫 文化 通票 下午茶 歐洲">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=600&q=80"
+                            alt="倫敦大英博物館"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">英倫文化之旅</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">大英博物館旁優雅住宿 8 日遊</h4>
+                        <div class="flex gap-2">
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#含下午茶</span>
+                            <span class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#地鐵通票</span>
+                        </div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100">
+                            <span><i class="fa-regular fa-clock mr-1"></i>8 天 7 夜</span>
+                            <span><i class="fa-solid fa-location-dot mr-1"></i>倫敦</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-1">
+                            <span class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 62,500</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 10: 紐約 -->
+                <div onclick="openFreeModal('free-10')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="美國 紐約 時代廣場 百老匯 美洲 城市漫步 景點">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative"><img
+                            src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=600&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="紐約"></div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">美東不夜城</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">時代廣場時尚飯店 7 日自由行</h4>
+                        <div class="flex gap-2"><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#百老匯票券</span><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#景點通行證</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-clock mr-1"></i>7 天 6 夜</span><span><i
+                                    class="fa-solid fa-location-dot mr-1"></i>紐約</span></div>
+                        <div class="flex items-center justify-between pt-1"><span
+                                class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 69,900</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 11: 瑞士 -->
+                <div onclick="openFreeModal('free-11')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="瑞士 少女峰 阿爾卑斯山 火車 登山 絕景 歐洲">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative"><img
+                            src="https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=600&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="瑞士"></div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">阿爾卑斯山仙境</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">少女峰景觀列車+渡假木屋 9 日</h4>
+                        <div class="flex gap-2"><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#頭等火車票</span><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#山景木屋</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-clock mr-1"></i>9 天 8 夜</span><span><i
+                                    class="fa-solid fa-location-dot mr-1"></i>瑞士</span></div>
+                        <div class="flex items-center justify-between pt-1"><span
+                                class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 88,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 12: 冰島 -->
+                <div onclick="openFreeModal('free-12')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="冰島 藍湖溫泉 極光 歐若拉 自駕 冰川 溫泉 歐洲">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative"><img
+                            src="https://images.unsplash.com/photo-1504893524553-b855bce32c67?auto=format&fit=crop&w=600&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="冰島"></div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">極光冰川探索</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">藍湖溫泉極光小屋 8 日自駕遊</h4>
+                        <div class="flex gap-2"><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#四驅車租用</span><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#藍湖門票</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-clock mr-1"></i>8 天 7 夜</span><span><i
+                                    class="fa-solid fa-location-dot mr-1"></i>冰島</span></div>
+                        <div class="flex items-center justify-between pt-1"><span
+                                class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 79,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 13: 沖繩 -->
+                <div onclick="openFreeModal('free-13')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="日本 沖繩 海灘 自駕 海景 渡假 亞洲 自由行">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative"><img
+                            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="沖繩"></div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">沖繩自駕海灘</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">恩納村海景渡假村 4 日自駕自由行</h4>
+                        <div class="flex gap-2"><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#海景第一排</span><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#包含租車</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-clock mr-1"></i>4 天 3 夜</span><span><i
+                                    class="fa-solid fa-location-dot mr-1"></i>沖繩</span></div>
+                        <div class="flex items-center justify-between pt-1"><span
+                                class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 18,500</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 14: 普吉島 -->
+                <div onclick="openFreeModal('free-14')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="泰國 普吉島 浮潛 帆船 跳島 海島 渡假 東南亞">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative"><img
+                            src="https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?auto=format&fit=crop&w=600&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="普吉島"></div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">熱帶跳島之旅</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">皮皮島雙人帆船+豪華飯店 5 日</h4>
+                        <div class="flex gap-2"><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#遊艇浮潛</span><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#晚餐巡航</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-clock mr-1"></i>5 天 4 夜</span><span><i
+                                    class="fa-solid fa-location-dot mr-1"></i>普吉島</span></div>
+                        <div class="flex items-center justify-between pt-1"><span
+                                class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 23,900</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 15: 威尼斯 -->
+                <div onclick="openFreeModal('free-15')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="義大利 威尼斯 貢多拉 運河 水都 浪漫 歐洲">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative"><img
+                            src="https://images.unsplash.com/photo-1514890547357-a9ee288728e0?auto=format&fit=crop&w=600&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="威尼斯"></div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">水都義式漫遊</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">水都運河景觀飯店 7 日風情自由行</h4>
+                        <div class="flex gap-2"><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#貢多拉體驗</span><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#水上巴士票</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-clock mr-1"></i>7 天 6 夜</span><span><i
+                                    class="fa-solid fa-location-dot mr-1"></i>威尼斯</span></div>
+                        <div class="flex items-center justify-between pt-1"><span
+                                class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 66,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 16: 埃及 -->
+                <div onclick="openFreeModal('free-16')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="埃及 金字塔 尼羅河 古文明 開羅 遊輪 中東 非洲">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative"><img
+                            src="https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=600&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="埃及"></div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">古文明探索</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">金字塔景觀飯店+尼羅河遊輪 10 日
+                        </h4>
+                        <div class="flex gap-2"><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#五星遊輪</span><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#專業導覽</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-clock mr-1"></i>10 天 9 夜</span><span><i
+                                    class="fa-solid fa-location-dot mr-1"></i>埃及</span></div>
+                        <div class="flex items-center justify-between pt-1"><span
+                                class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 74,500</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 17: 夏威夷 -->
+                <div onclick="openFreeModal('free-17')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="夏威夷 海灘 衝浪 美國 渡假 陽光 威基基">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative"><img
+                            src="https://images.unsplash.com/photo-1542259009477-d625272157b7?auto=format&fit=crop&w=600&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="夏威夷"></div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">美式夏日海灘</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">威基基海灘五星飯店 7 日渡假</h4>
+                        <div class="flex gap-2"><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#衝浪課程</span><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#海景陽台</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-clock mr-1"></i>7 天 6 夜</span><span><i
+                                    class="fa-solid fa-location-dot mr-1"></i>夏威夷</span></div>
+                        <div class="flex items-center justify-between pt-1"><span
+                                class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 72,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 18: 迪拜 -->
+                <div onclick="openFreeModal('free-18')"
+                    class="card card-item bg-white/90 rounded-2xl overflow-hidden border border-stone-200/70 soft-shadow transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between group"
+                    data-keywords="迪拜 杜拜 哈里發塔 沙漠 中東 奢華 觀景台">
+                    <div class="h-48 bg-stone-200 overflow-hidden relative"><img
+                            src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=600&q=80"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            alt="迪拜"></div>
+                    <div class="p-4 space-y-2">
+                        <div class="text-xs font-semibold text-coral-600">中東奢華體驗</div>
+                        <h4 class="font-bold text-gray-800 group-hover:text-coral-600 transition">哈里發塔旁奢華五星 6 日奢華遊</h4>
+                        <div class="flex gap-2"><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#沙漠衝沙</span><span
+                                class="bg-coral-50 text-coral-600 text-xs px-2 py-0.5 rounded">#高空觀景台</span></div>
+                        <div class="text-xs text-gray-400 flex justify-between pt-2 border-t border-stone-100"><span><i
+                                    class="fa-regular fa-clock mr-1"></i>6 天 5 夜</span><span><i
+                                    class="fa-solid fa-location-dot mr-1"></i>迪拜</span></div>
+                        <div class="flex items-center justify-between pt-1"><span
+                                class="text-xs text-coral-600 font-medium"><i
+                                    class="fa-solid fa-sliders mr-1"></i>客製試算</span>
+                            <div class="text-right text-coral-600 font-bold text-xl">TWD 59,800</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-200/70 border-t border-stone-300/60 mt-12 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+                <div class="space-y-3">
+                    <a href="index.html" class="flex items-center gap-2">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-coral-600 text-white flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-compass"></i>
+                        </div>
+                        <span class="text-xl font-bold tracking-tight text-dark uppercase">Wanderlust</span>
+                    </a>
+                    <div class="text-sm text-gray-600 space-y-1">
+                        <p><i class="fa-solid fa-location-dot w-5 text-gray-400"></i> address: 台北市中正區信義路二段 100 號 8 樓</p>
+                        <p><i class="fa-solid fa-phone w-5 text-gray-400"></i> phone: (02) 2345-6789</p>
+                        <p><i class="fa-solid fa-envelope w-5 text-gray-400"></i> gmail: service@wanderlust.com.tw</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3 md:text-center">
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block">follow us</span>
+                    <div class="flex md:justify-center items-center space-x-4">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600 text-white flex items-center justify-center text-xl shadow hover:opacity-90 transition">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl shadow hover:opacity-90 transition">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xl shadow hover:opacity-90 transition">
+                            <i class="fa-brands fa-line"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="space-y-3 md:text-right">
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block">download app</span>
+                    <div class="flex flex-col md:items-end space-y-2">
+                        <button
+                            class="flex items-center justify-center gap-3 bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition w-44">
+                            <i class="fa-brands fa-apple text-xl w-6 text-center"></i>
+                            <div class="text-left leading-tight flex-1">
+                                <div class="text-xs uppercase tracking-wider">Download on the</div>
+                                <div class="text-xs font-semibold">App Store</div>
+                            </div>
+                        </button>
+                        <button
+                            class="flex items-center justify-center gap-3 bg-black text-white px-4 py-2 rounded-xl hover:bg-gray-800 transition w-44">
+                            <i class="fa-brands fa-google-play text-xl w-6 text-center"></i>
+                            <div class="text-left leading-tight flex-1">
+                                <div class="text-xs uppercase tracking-wider">Download on the</div>
+                                <div class="text-xs font-semibold">Google Play</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-stone-300/60 mt-8 pt-4 text-center text-xs text-gray-500">
+                © 2026 Wanderlust Travel Agency. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- 自由行客製化試算通用 Modal -->
+    <div id="free-modal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div
+            class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl relative my-auto">
+            <button onclick="closeFreeModal()"
+                class="absolute top-4 right-4 z-20 bg-white/80 hover:bg-white text-gray-700 w-10 h-10 rounded-full flex items-center justify-center shadow-lg backdrop-blur-md transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="relative h-56 w-full bg-stone-900 flex-shrink-0">
+                <img id="free-modal-img" src="" class="w-full h-full object-cover opacity-85" alt="Package Cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-4 left-6 right-6 text-white space-y-1">
+                    <span id="free-modal-city"
+                        class="bg-coral-600 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">自由行機加酒</span>
+                    <h2 id="free-modal-title" class="text-xl font-bold tracking-tight text-white">方案標題</h2>
+                    <p id="free-modal-hotel-name" class="text-xs text-stone-200"><i
+                            class="fa-solid fa-hotel mr-1"></i>搭配住宿：東京新宿格拉斯麗飯店</p>
+                </div>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-6 flex-grow">
+                <!-- 1. 航班選擇器 -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-700 uppercase tracking-wider block"><i
+                            class="fa-solid fa-plane-departure text-coral-600 mr-1"></i>選擇來回航班時段</label>
+                    <div id="free-flight-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                </div>
+
+                <!-- 2. 房型等級選擇 -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-700 uppercase tracking-wider block"><i
+                            class="fa-solid fa-bed text-coral-600 mr-1"></i>飯店房型升級方案</label>
+                    <div id="free-room-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+                </div>
+
+                <!-- 3. 加值選購 Checkbox -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-gray-700 uppercase tracking-wider block"><i
+                            class="fa-solid fa-cubes text-coral-600 mr-1"></i>自由加購行程與服務</label>
+                    <div id="free-addon-options"
+                        class="space-y-2 bg-stone-50 p-4 rounded-2xl border border-stone-200/80"></div>
+                </div>
+
+                <!-- 4. 人數調整器 -->
+                <div class="flex items-center justify-between pt-2 border-t border-stone-200">
+                    <span class="text-sm font-bold text-gray-700">同行旅客人數</span>
+                    <div class="flex items-center space-x-3 bg-stone-100 rounded-xl px-3 py-1.5">
+                        <button onclick="changeFreePassengers(-1)"
+                            class="w-7 h-7 rounded-lg bg-white shadow-sm hover:bg-stone-200 text-stone-700 font-bold flex items-center justify-center transition">-</button>
+                        <span id="free-passenger-count"
+                            class="font-bold text-gray-800 text-base w-6 text-center">2</span>
+                        <button onclick="changeFreePassengers(1)"
+                            class="w-7 h-7 rounded-lg bg-white shadow-sm hover:bg-stone-200 text-stone-700 font-bold flex items-center justify-center transition">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer 實時金額計算 -->
+            <div
+                class="bg-stone-100 border-t border-stone-200 p-4 px-6 flex items-center justify-between flex-shrink-0">
+                <div>
+                    <span class="text-xs text-gray-500 block">客製方案預算總計</span>
+                    <span id="free-total-price" class="text-2xl font-bold text-coral-600">TWD 0</span>
+                </div>
+                <button onclick="confirmFreeBooking()"
+                    class="bg-coral-600 hover:bg-coral-700 text-white text-xs font-bold py-3 px-6 rounded-xl transition shadow-md flex items-center gap-2">
+                    <i class="fa-solid fa-cart-shopping"></i> 確認方案並預訂
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 預訂成功 Modal -->
+    <div id="free-success-modal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl relative">
+            <div
+                class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 class="text-xl font-bold text-dark">自由行方案預訂完成！</h3>
+            <div class="bg-stone-50 p-4 rounded-xl text-left text-xs space-y-1.5 text-gray-600 border border-stone-200">
+                <p><strong>訂單編號：</strong><span id="free-order-id" class="font-mono text-coral-600">FIT-2026-9921</span>
+                </p>
+                <p><strong>預訂方案：</strong><span id="free-order-title">東京自由行</span></p>
+                <p><strong>預訂總額：</strong><span id="free-order-amount" class="font-bold text-dark">TWD 45,000</span></p>
+            </div>
+            <button onclick="document.getElementById('free-success-modal').classList.add('hidden')"
+                class="w-full bg-dark text-white text-xs font-bold py-3 rounded-xl hover:bg-stone-800 transition">
+                返回頁面
+            </button>
+        </div>
+    </div>
+
+    <!-- 引入自由行專屬搜尋腳本 (頁面中間機加酒搜尋) -->
+    <script src="search.js"></script>
+    <!-- 引入全域 Auth 核心腳本 -->
+    <script src="auth.js"></script>
+
+    <!-- 💡 全域同義詞字典與 Header 關鍵字搜尋處理腳本 -->
+    <script>
+        // 國家與城市關聯同義詞字典
+        const SEARCH_SYNONYMS = {
+            '韓國': ['韓國', '首爾', '釜山', '濟州島', '明洞', '韓風'],
+            '首爾': ['首爾', '韓國', '明洞'],
+            '日本': ['日本', '東京', '大阪', '京都', '北海道', '沖繩', '關西', '東北', '飛驒', '高山', '白川鄉', '小樽'],
+            '東京': ['東京', '日本', '新宿', '目黑川'],
+            '京都': ['京都', '日本', '關西'],
+            '北海道': ['北海道', '日本', '札幌', '小樽', '美瑛'],
+            '沖繩': ['沖繩', '日本', '恩納村'],
+            '泰國': ['泰國', '曼谷', '清邁', '芭達雅', '普吉島'],
+            '曼谷': ['曼谷', '泰國'],
+            '普吉島': ['普吉島', '泰國'],
+            '歐洲': ['歐洲', '法國', '巴黎', '普羅旺斯', '荷蘭', '庫肯霍夫', '芬蘭', '羅瓦涅米', '西班牙', '巴塞隆納', '瑞士', '少女峰', '冰島', '義大利', '威尼斯', '丹麥', '瑞典', '北歐', '倫敦', '英國'],
+            '法國': ['法國', '巴黎', '普羅旺斯', '歐洲'],
+            '英國': ['英國', '倫敦', '歐洲'],
+            '倫敦': ['倫敦', '英國', '歐洲'],
+            '瑞士': ['瑞士', '少女峰', '阿爾卑斯山', '歐洲'],
+            '冰島': ['冰島', '藍湖溫泉', '極光', '歐洲'],
+            '義大利': ['義大利', '威尼斯', '羅馬', '歐洲'],
+            '威尼斯': ['威尼斯', '義大利', '歐洲'],
+            '美洲': ['美洲', '美國', '紐約', '夏威夷'],
+            '美國': ['美國', '夏威夷', '紐約', '威基基', '美洲'],
+            '夏威夷': ['夏威夷', '美國', '威基基'],
+            '紐約': ['紐約', '美國'],
+            '中東': ['中東', '迪拜', '杜拜', '埃及', '開羅'],
+            '迪拜': ['迪拜', '杜拜', '中東'],
+            '杜拜': ['迪拜', '杜拜', '中東'],
+            '埃及': ['埃及', '開羅', '金字塔', '中東', '非洲'],
+            '印尼': ['印尼', '巴厘島', '巴里島', '烏布', '東南亞'],
+            '巴里島': ['印尼', '巴里島', '巴厘島', '烏布'],
+            '巴厘島': ['印尼', '巴里島', '巴厘島', '烏布'],
+            '澳洲': ['澳洲', '雪梨', '大洋洲'],
+            '雪梨': ['雪梨', '澳洲', '大洋洲']
+        };
+
+        // 同義詞擴充函數
+        function expandSearchTerms(searchTerms) {
+            let expanded = [];
+            searchTerms.forEach(term => {
+                expanded.push(term);
+                Object.keys(SEARCH_SYNONYMS).forEach(key => {
+                    if (term.includes(key) || key.includes(term)) {
+                        expanded = expanded.concat(SEARCH_SYNONYMS[key]);
+                    }
+                });
+            });
+            return [...new Set(expanded)];
+        }
+
+        // Header 同義詞搜尋過濾邏輯
+        function performHeaderSearch() {
+            const searchInput = document.getElementById('searchInput');
+            if (!searchInput) return;
+
+            const query = searchInput.value.trim().toLowerCase();
+            const rawTerms = query.split(/\s+/).filter(term => term.length > 0);
+
+            const cards = document.querySelectorAll('.card, .card-item');
+            let totalVisibleCount = 0;
+
+            cards.forEach(card => {
+                const hiddenKeywords = (card.getAttribute('data-keywords') || '').toLowerCase();
+                const visibleText = (card.innerText || '').toLowerCase();
+                const searchableText = `${hiddenKeywords} ${visibleText}`;
+
+                const isMatched = rawTerms.length === 0 || rawTerms.every(term => {
+                    const expandedTerms = expandSearchTerms([term]);
+                    return expandedTerms.some(syn => searchableText.includes(syn));
+                });
+
+                if (isMatched) {
+                    card.style.display = 'flex';
+                    totalVisibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // 處理自由行無結果提示區塊
+            const noResultBox = document.getElementById('no-result');
+            if (noResultBox) {
+                if (rawTerms.length > 0 && totalVisibleCount === 0) {
+                    noResultBox.classList.remove('hidden');
+                } else {
+                    noResultBox.classList.add('hidden');
+                }
+            }
+        }
+
+        // 頁面載入與事件監聽綁定
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('query');
+            const searchInput = document.getElementById('searchInput');
+            if (query && searchInput) {
+                searchInput.value = query;
+                performHeaderSearch();
+            }
+        });
+
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('#searchBtn')) {
+                e.preventDefault();
+                performHeaderSearch();
+            }
+        });
+
+        document.addEventListener('keypress', function (e) {
+            if (e.target && e.target.id === 'searchInput' && e.key === 'Enter') {
+                e.preventDefault();
+                performHeaderSearch();
+            }
+        });
+
+        document.addEventListener('input', function (e) {
+            if (e.target && e.target.id === 'searchInput' && e.target.value.trim() === '') {
+                performHeaderSearch();
+            }
+        });
+    </script>
+
+    <!-- 自由行客製化試算 Modal 邏輯 -->
+    <script>
+        // 國家/區域專屬資料庫配置
+        const regionalTemplates = {
+            '埃及': {
+                hotel: '開羅金字塔景觀五星飯店',
+                flights: [
+                    { name: '阿聯酋航空 (杜拜轉機來回)', diff: 0 },
+                    { name: '埃及航空 (段內直飛)', diff: 3500 },
+                    { name: '升級商務艙 (土耳其航空)', diff: 28000 }
+                ],
+                rooms: [
+                    { name: '金字塔全景雙人房', diff: 0 },
+                    { name: '尼羅河景觀奢華套房', diff: 4500 }
+                ],
+                addons: [
+                    { id: 'a1', name: '中東 10 日高速上網卡', price: 680 },
+                    { id: 'a2', name: '吉薩金字塔夜間奇幻聲光秀門票', price: 1500 },
+                    { id: 'a3', name: '帝王谷日出熱氣球飛升體驗', price: 4200 }
+                ]
+            },
+            '歐洲': { // 包含巴黎、倫敦、瑞士、冰島、威尼斯
+                hotel: '市中心四星精品設計飯店',
+                flights: [
+                    { name: '長榮/華航 直飛航班', diff: 0 },
+                    { name: '阿聯酋/卡達航空 轉機精省', diff: -3500 },
+                    { name: '升級豪經艙', diff: 15000 }
+                ],
+                rooms: [
+                    { name: '標準雙人客房 (含歐式早餐)', diff: 0 },
+                    { name: '著名景點/地標景觀房', diff: 5200 }
+                ],
+                addons: [
+                    { id: 'a1', name: '歐洲 33 國通用 15 日 eSIM (10GB)', price: 850 },
+                    { id: 'a2', name: '城市博物館與大眾運輸多日 Pass', price: 2400 },
+                    { id: 'a3', name: '在地米其林推薦餐廳雙人套餐預約', price: 3800 }
+                ]
+            },
+            '海島': { // 包含巴里島、普吉島、沖繩、夏威夷
+                hotel: '海景第一排渡假村 Villa',
+                flights: [
+                    { name: '熱門傳統航空 (早去晚回)', diff: 0 },
+                    { name: '廉價航空輕裝出發', diff: -2800 }
+                ],
+                rooms: [
+                    { name: '花園景觀雙人房', diff: 0 },
+                    { name: '獨棟私人家用泳池 Villa', diff: 6500 }
+                ],
+                addons: [
+                    { id: 'a1', name: '當地無限量 eSIM 網卡 (5日)', price: 390 },
+                    { id: 'a2', name: '機場 ⇌ 飯店來回專車接送', price: 1200 },
+                    { id: 'a3', name: '雙人夕陽遊艇浮潛體驗套票', price: 2900 }
+                ]
+            },
+            '美洲/中東': { // 紐約、迪拜
+                hotel: '繁華商圈地標飯店',
+                flights: [
+                    { name: '正航班直飛', diff: 0 },
+                    { name: '優質轉機航班', diff: -4000 }
+                ],
+                rooms: [
+                    { name: '豪華市景雙人房', diff: 0 },
+                    { name: '高樓層天際線套房', diff: 7200 }
+                ],
+                addons: [
+                    { id: 'a1', name: '美加/中東全境通用 5G 上網卡', price: 750 },
+                    { id: 'a2', name: '經典高空觀景台/百老匯體驗票', price: 2600 },
+                    { id: 'a3', name: '全天候隨上隨下觀光巴士 48 小時券', price: 1800 }
+                ]
+            },
+            '日韓': { // 東京、京都、北海道、首爾
+                hotel: '地鐵站直達四星級飯店',
+                flights: [
+                    { name: '傳統航空 (早去晚回)', diff: 0 },
+                    { name: '優質廉航 (含 20kg 託運)', diff: -2000 },
+                    { name: '星宇航空 / 全日空 ANA', diff: 1800 }
+                ],
+                rooms: [
+                    { name: '標準雙人房 (含早餐)', diff: 0 },
+                    { name: '行政高層景觀客房', diff: 2800 }
+                ],
+                addons: [
+                    { id: 'a1', name: '日韓 5 日吃到飽 eSIM 網卡', price: 350 },
+                    { id: 'a2', name: '機場特快鐵路來回車票 (南海電鐵/Skyliner/AREX)', price: 920 },
+                    { id: 'a3', name: '熱門主題樂園一日門票 (含接送)', price: 2800 }
+                ]
+            }
+        };
+
+        let currentFreeTour = null;
+        let freePassengers = 2;
+        let selectedFlight = 0;
+        let selectedRoom = 0;
+        let selectedAddons = new Set();
+
+        // 動態判斷國家並開啟 Modal
+        function openFreeModal(id) {
+            const cardElement = document.querySelector(`[onclick="openFreeModal('${id}')"]`);
+            if (!cardElement) return;
+
+            const title = cardElement.querySelector('h4').textContent;
+            const city = cardElement.querySelector('.fa-location-dot').parentNode.textContent.trim();
+            const priceText = cardElement.querySelector('.text-xl').textContent.replace(/[^0-9]/g, '');
+            const price = parseInt(priceText, 10) || 25000;
+            const imgSrc = cardElement.querySelector('img').src;
+            const keywords = cardElement.getAttribute('data-keywords') || '';
+
+            let templateKey = '日韓';
+            if (keywords.includes('埃及')) templateKey = '埃及';
+            else if (keywords.includes('巴里島') || keywords.includes('沖繩') || keywords.includes('普吉島') || keywords.includes('夏威夷')) templateKey = '海島';
+            else if (keywords.includes('法國') || keywords.includes('巴黎') || keywords.includes('英國') || keywords.includes('倫敦') || keywords.includes('瑞士') || keywords.includes('冰島') || keywords.includes('義大利') || keywords.includes('威尼斯')) templateKey = '歐洲';
+            else if (keywords.includes('紐約') || keywords.includes('迪拜') || keywords.includes('杜拜') || keywords.includes('美國')) templateKey = '美洲/中東';
+
+            const template = regionalTemplates[templateKey];
+
+            currentFreeTour = {
+                title: title,
+                city: city,
+                price: price,
+                img: imgSrc,
+                hotel: template.hotel,
+                flights: template.flights,
+                rooms: template.rooms,
+                addons: template.addons
+            };
+
+            selectedFlight = 0;
+            selectedRoom = 0;
+            selectedAddons.clear();
+
+            document.getElementById('free-modal-img').src = currentFreeTour.img;
+            document.getElementById('free-modal-city').textContent = currentFreeTour.city;
+            document.getElementById('free-modal-title').textContent = currentFreeTour.title;
+            document.getElementById('free-modal-hotel-name').innerHTML = `<i class="fa-solid fa-hotel mr-1"></i>搭配住宿：${currentFreeTour.hotel}`;
+
+            document.getElementById('free-flight-options').innerHTML = currentFreeTour.flights.map((f, i) => `
+                <label onclick="selectFlight(${i})" class="flex items-center justify-between p-3 rounded-xl border border-stone-200 bg-white cursor-pointer hover:border-coral-300">
+                    <div class="flex items-center gap-2">
+                        <input type="radio" name="flight" ${i === 0 ? 'checked' : ''} class="text-coral-600 focus:ring-coral-600">
+                        <span class="text-xs font-semibold text-gray-800">${f.name}</span>
+                    </div>
+                    <span class="text-xs text-coral-600 font-bold">${f.diff >= 0 ? '+' : ''}${f.diff.toLocaleString()}</span>
+                </label>
+            `).join('');
+
+            document.getElementById('free-room-options').innerHTML = currentFreeTour.rooms.map((r, i) => `
+                <label onclick="selectRoom(${i})" class="flex items-center justify-between p-3 rounded-xl border border-stone-200 bg-white cursor-pointer hover:border-coral-300">
+                    <div class="flex items-center gap-2">
+                        <input type="radio" name="room" ${i === 0 ? 'checked' : ''} class="text-coral-600 focus:ring-coral-600">
+                        <span class="text-xs font-semibold text-gray-800">${r.name}</span>
+                    </div>
+                    <span class="text-xs text-coral-600 font-bold">${r.diff >= 0 ? '+' : ''}${r.diff.toLocaleString()}</span>
+                </label>
+            `).join('');
+
+            document.getElementById('free-addon-options').innerHTML = currentFreeTour.addons.map(a => `
+                <label onclick="toggleAddon('${a.id}')" class="flex items-center justify-between p-2.5 rounded-lg bg-white border border-stone-200 cursor-pointer hover:border-coral-300">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" class="rounded text-coral-600 focus:ring-coral-600">
+                        <span class="text-xs font-medium text-gray-700">${a.name}</span>
+                    </div>
+                    <span class="text-xs font-bold text-gray-800">+TWD ${a.price.toLocaleString()}</span>
+                </label>
+            `).join('');
+
+            updateFreePrice();
+            document.getElementById('free-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFreeModal() {
+            document.getElementById('free-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function selectFlight(i) { selectedFlight = i; updateFreePrice(); }
+        function selectRoom(i) { selectedRoom = i; updateFreePrice(); }
+        function toggleAddon(id) {
+            if (selectedAddons.has(id)) selectedAddons.delete(id);
+            else selectedAddons.add(id);
+            updateFreePrice();
+        }
+
+        function changeFreePassengers(delta) {
+            if (freePassengers + delta >= 1 && freePassengers + delta <= 8) {
+                freePassengers += delta;
+                document.getElementById('free-passenger-count').textContent = freePassengers;
+                updateFreePrice();
+            }
+        }
+
+        function updateFreePrice() {
+            if (!currentFreeTour) return;
+
+            let base = currentFreeTour.price;
+            base += currentFreeTour.flights[selectedFlight].diff;
+            base += currentFreeTour.rooms[selectedRoom].diff;
+
+            let addonTotal = 0;
+            currentFreeTour.addons.forEach(a => {
+                if (selectedAddons.has(a.id)) addonTotal += a.price;
+            });
+
+            const total = (base * freePassengers) + addonTotal;
+            document.getElementById('free-total-price').textContent = `TWD ${total.toLocaleString()}`;
+        }
+
+        // 確認自由行方案並預訂（含會員檢查與寫入 addToUserCart）
+        function confirmFreeBooking() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                alert("請先登入會員，方可完成自由行方案預訂！");
+                openAuthModal('login');
+                return;
+            }
+
+            if (!currentFreeTour) return;
+
+            const totalText = document.getElementById('free-total-price').textContent;
+            const orderId = 'FIT-2026-' + Math.floor(1000 + Math.random() * 9000);
+            const orderTitle = `${currentFreeTour.title} (${freePassengers}人)`;
+
+            // 寫入購物車 LocalStorage
+            addToUserCart({
+                orderId: orderId,
+                title: orderTitle,
+                price: totalText,
+                img: currentFreeTour.img,
+                tag: '#自由行機加酒'
+            });
+
+            // 更新預訂成功 Modal 內容
+            document.getElementById('free-order-id').textContent = orderId;
+            document.getElementById('free-order-title').textContent = orderTitle;
+            document.getElementById('free-order-amount').textContent = totalText;
+
+            closeFreeModal();
+            document.getElementById('free-success-modal').classList.remove('hidden');
+        }
+    </script>
+</body>
+
+</html>
